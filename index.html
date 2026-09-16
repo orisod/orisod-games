@@ -51,11 +51,11 @@
 :root{
   --s0:#0b0e15; --s1:#12151d; --s2:#191c26; --s3:#22262f; --s4:#2b2e38; --s5:#32353d;
   --primary:#2563eb; --primary-light:#b4c5ff;
-  --secondary:#00a6e0; --secondary-light:#7bd0ff;
-  --tertiary:#585be6; --tertiary-light:#c0c1ff;
+  --violet:#7c5cff; --violet-light:#cabdff;
   --text:#f1f5f9; --text-muted:#93a0b4;
   --border:#262b36; --border-soft:#1c2029;
   --amber:#f59e0b; --amber-light:#fcd9a8;
+  --secondary-light:#7bd0ff;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--s0);}
@@ -65,206 +65,183 @@ body{
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   background-image:
-    radial-gradient(circle at 15% 15%, rgba(0,166,224,.09) 0%, transparent 42%),
-    radial-gradient(circle at 85% 30%, rgba(37,99,235,.10) 0%, transparent 46%),
-    radial-gradient(circle at 50% 85%, rgba(88,91,230,.07) 0%, transparent 52%);
+    radial-gradient(circle at 12% 8%, rgba(37,99,235,.12) 0%, transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(124,92,255,.12) 0%, transparent 44%),
+    radial-gradient(circle at 50% 95%, rgba(37,99,235,.08) 0%, transparent 50%);
 }
 h1,h2,h3{font-family:'Plus Jakarta Sans',Arial,Helvetica,sans-serif;margin:0;}
-.app-shell{max-width:560px;margin:0 auto;position:relative;min-height:100vh;}
+img{max-width:100%;display:block;}
 .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;}
 
 /* header */
 .site-header{
-  position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:50;
-  padding-top:env(safe-area-inset-top,0px);
-  background:rgba(11,14,21,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(0,166,224,.14);
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,14,21,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
 }
-.header-inner{padding:10px 16px 8px 16px;display:flex;flex-direction:column;gap:8px;}
-.header-top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.brand{display:flex;align-items:center;gap:8px;}
-.brand img{height:26px;width:26px;border-radius:7px;display:block;}
+.header-row{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-block:12px;
+}
+.brand{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.brand img{height:28px;width:28px;border-radius:7px;}
 .brand-text{display:flex;align-items:center;gap:6px;}
 .brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;letter-spacing:.03em;color:#fff;}
 .brand-badge{
   padding:2px 7px;border-radius:4px;background:rgba(37,99,235,.22);border:1px solid rgba(37,99,235,.55);
   color:var(--secondary-light);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
 }
-.back-pill{
-  display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;
-  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
-  text-decoration:none;font-size:11px;transition:border-color .15s,color .15s;
-}
-.back-pill:hover{border-color:rgba(0,166,224,.5);color:var(--secondary-light);}
-.back-pill svg{width:12px;height:12px;transition:transform .15s;}
-.back-pill:hover svg{transform:translateX(-2px);}
-.breadcrumb-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);letter-spacing:.02em;}
-.breadcrumb-row .crumb-active{color:var(--secondary-light);text-transform:uppercase;letter-spacing:.06em;font-weight:600;display:inline-flex;align-items:center;gap:4px;}
-.breadcrumb-row .crumb-active svg{width:12px;height:12px;}
-.breadcrumb-row .sep{color:#3a4152;}
-
-/* main */
-main{padding-top:78px;padding-bottom:96px;}
-
-.controls{
-  padding:12px 14px;display:flex;flex-direction:column;gap:10px;
-  background:rgba(11,14,21,.55);border-bottom:1px solid rgba(37,99,235,.08);
-}
-.search-wrap{position:relative;}
-.search-wrap svg.search-icon{
-  position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--secondary-light);opacity:.75;pointer-events:none;
+.header-search{position:relative;flex:1 1 240px;min-width:180px;max-width:480px;}
+.header-search svg{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-muted);pointer-events:none;
 }
 #gameSearchInput{
-  width:100%;padding:9px 60px 9px 34px;border-radius:10px;background:var(--s1);
-  border:1px solid rgba(0,166,224,.22);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;
+  width:100%;padding:9px 14px 9px 36px;border-radius:10px;background:var(--s1);
+  border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;
   transition:border-color .15s,background .15s,box-shadow .15s;
 }
 #gameSearchInput::placeholder{color:#697285;}
-#gameSearchInput:focus{outline:none;border-color:rgba(0,166,224,.65);background:var(--s2);box-shadow:0 0 0 3px rgba(0,166,224,.12);}
-.ready-tag{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:2px 7px;border-radius:5px;
-  background:var(--s3);border:1px solid var(--border);color:var(--text-muted);font-size:9px;font-weight:700;letter-spacing:.08em;
-}
-.pill-scroller{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;}
-.pill-scroller::-webkit-scrollbar{display:none;}
-.cat-pill{
-  flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
+#gameSearchInput:focus{outline:none;border-color:rgba(37,99,235,.6);background:var(--s2);box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.back-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;
   background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;
+  text-decoration:none;font-size:12px;transition:border-color .15s,color .15s;flex-shrink:0;margin-left:auto;
 }
-.cat-pill:hover{color:var(--text);border-color:rgba(0,166,224,.4);}
-.cat-pill .count{padding:1px 6px;border-radius:999px;background:rgba(255,255,255,.08);font-size:10px;}
-.cat-pill.active{
-  background:var(--primary);color:#fff;border-color:rgba(123,208,255,.6);
-  box-shadow:0 0 14px rgba(37,99,235,.5);
+.back-pill:hover{border-color:rgba(37,99,235,.5);color:var(--primary-light);}
+.back-pill svg{width:12px;height:12px;transition:transform .15s;}
+.back-pill:hover svg{transform:translateX(-2px);}
+
+/* category chips */
+.chips-band{border-bottom:1px solid var(--border-soft);}
+.chip-row{display:flex;gap:8px;overflow-x:auto;padding-block:12px;}
+.chip-row::-webkit-scrollbar{display:none;}
+.chip{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:999px;
+  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;
 }
-.cat-pill.active .count{background:rgba(0,0,0,.25);color:var(--secondary-light);}
+.chip:hover{color:var(--text);border-color:rgba(37,99,235,.4);}
+.chip .count{padding:1px 6px;border-radius:999px;background:rgba(255,255,255,.08);font-size:10.5px;}
+.chip.active{background:var(--primary);color:#fff;border-color:rgba(180,197,255,.5);box-shadow:0 0 14px rgba(37,99,235,.45);}
+.chip.active .count{background:rgba(0,0,0,.22);color:#fff;}
 
-.trust-strip{
-  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
-  padding:9px 14px;font-size:11px;color:var(--text-muted);
-  border-bottom:1px solid rgba(0,166,224,.08);
+.trust-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-block:10px;font-size:12px;color:var(--text-muted);}
+.trust-line .dot{color:#3a4152;}
+
+main{padding-block:24px 56px;}
+
+/* hero */
+.hero{
+  position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--border);
+  min-height:260px;display:flex;align-items:flex-end;margin-bottom:32px;
+  background:var(--s2);
 }
-.trust-strip .item{display:inline-flex;align-items:center;gap:5px;}
-.trust-strip svg{width:13px;height:13px;color:var(--secondary-light);}
-.trust-strip .dot{color:#3a4152;}
+.hero picture, .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(0deg, rgba(9,11,17,.94) 0%, rgba(9,11,17,.55) 45%, rgba(9,11,17,.15) 100%);
+}
+.hero-content{position:relative;z-index:1;padding:24px;max-width:520px;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+  background:rgba(37,99,235,.25);border:1px solid rgba(180,197,255,.5);color:var(--primary-light);
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;
+}
+.hero h2{font-size:28px;line-height:1.15;color:#fff;margin-bottom:8px;}
+.hero p{font-size:14px;color:#cbd3e0;line-height:1.5;margin-bottom:16px;max-width:420px;}
+.hero-play{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;
+  background:var(--primary);color:#fff;border:1px solid rgba(180,197,255,.5);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;
+  transition:filter .15s,transform .15s;
+}
+.hero-play:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.hero-play svg{width:16px;height:16px;}
 
-/* catalog */
-#catalogContent{padding:14px 14px 8px 14px;display:flex;flex-direction:column;gap:20px;}
-.game-section{display:flex;flex-direction:column;gap:10px;}
-.section-head{display:flex;align-items:center;gap:8px;}
-.section-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.section-head h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#e7ebf3;}
-.section-badge{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid;}
-.section-line{flex:1;height:1px;background:linear-gradient(90deg, currentColor, transparent);opacity:.35;}
-.section-count{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;}
+/* game row */
+.row-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+.row-head h2{font-size:18px;}
+.row-head span{font-size:12px;color:var(--text-muted);}
 
-.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.game-row{
+  display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;scroll-snap-type:x proximity;
+}
+.game-row::-webkit-scrollbar{height:8px;}
+.game-row::-webkit-scrollbar-thumb{background:var(--s4);border-radius:4px;}
+.game-row::-webkit-scrollbar-track{background:transparent;}
+
 .game-card{
-  position:relative;display:flex;flex-direction:column;border-radius:16px;
-  background:linear-gradient(180deg, var(--s2), var(--s1));
-  border:1px solid var(--border);padding:8px;cursor:pointer;
+  flex:0 0 220px;scroll-snap-align:start;display:flex;flex-direction:column;
+  border-radius:16px;background:var(--s1);border:1px solid var(--border);overflow:hidden;
+  cursor:pointer;font:inherit;color:inherit;text-align:left;padding:0;
   transition:border-color .18s,transform .18s,box-shadow .18s;
-  font:inherit;color:inherit;text-align:left;
 }
-.game-card:hover{transform:translateY(-2px);}
-.game-card:focus-visible{outline:2px solid var(--secondary-light);outline-offset:2px;}
-.thumb{
-  position:relative;width:100%;aspect-ratio:1/1;border-radius:11px;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-.thumb svg{width:42%;height:42%;position:relative;z-index:1;}
-.thumb-tag{
-  position:absolute;top:6px;right:6px;padding:2px 6px;border-radius:5px;
-  background:rgba(11,14,21,.85);backdrop-filter:blur(4px);border:1px solid;
-  display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:.04em;
-}
-.thumb-tag svg{width:10px;height:10px;}
-.card-body{display:flex;flex-direction:column;gap:6px;padding-top:9px;flex:1;justify-content:space-between;}
-.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;color:#f2f4f8;line-height:1.25;}
-.card-desc{font-size:11px;color:var(--text-muted);line-height:1.4;}
-.card-meta{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:7px;border-top:1px solid var(--border-soft);}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:6px;font-size:9.5px;font-weight:700;border:1px solid;}
+.game-card:hover{transform:translateY(-3px);border-color:rgba(37,99,235,.5);box-shadow:0 10px 28px rgba(0,0,0,.35);}
+.game-card:focus-visible{outline:2px solid var(--primary-light);outline-offset:2px;}
+.card-thumb{position:relative;width:100%;aspect-ratio:4/3;background:var(--s2);overflow:hidden;}
+.card-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
+.game-card:hover .card-thumb img{transform:scale(1.05);}
+.card-body{display:flex;flex-direction:column;gap:8px;padding:12px;}
+.card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;}
+.card-meta{display:flex;align-items:center;gap:6px;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid;}
 .badge .diff-dot{width:6px;height:6px;border-radius:50%;}
-.badge svg{width:10px;height:10px;}
-
-/* category accent variants */
-.accent-arcade{color:var(--secondary);}
-.thumb.accent-arcade{background:linear-gradient(155deg, rgba(0,166,224,.28), rgba(11,14,21,.9));}
-.game-card.accent-arcade{border-color:rgba(0,166,224,.22);}
-.game-card.accent-arcade:hover{border-color:rgba(0,166,224,.55);box-shadow:0 0 20px rgba(0,166,224,.16);}
-.thumb-tag.accent-arcade{border-color:rgba(0,166,224,.4);color:var(--secondary-light);}
-
-.accent-logic{color:var(--primary);}
-.thumb.accent-logic{background:linear-gradient(155deg, rgba(37,99,235,.30), rgba(11,14,21,.9));}
-.game-card.accent-logic{border-color:rgba(37,99,235,.22);}
-.game-card.accent-logic:hover{border-color:rgba(37,99,235,.55);box-shadow:0 0 20px rgba(37,99,235,.16);}
-.thumb-tag.accent-logic{border-color:rgba(37,99,235,.4);color:var(--primary-light);}
-
-.accent-words{color:var(--tertiary);}
-.thumb.accent-words{background:linear-gradient(155deg, rgba(88,91,230,.30), rgba(11,14,21,.9));}
-.game-card.accent-words{border-color:rgba(88,91,230,.22);}
-.game-card.accent-words:hover{border-color:rgba(88,91,230,.55);box-shadow:0 0 20px rgba(88,91,230,.16);}
-.thumb-tag.accent-words{border-color:rgba(88,91,230,.4);color:var(--tertiary-light);}
-
-.badge-diff-low{background:rgba(0,166,224,.12);border-color:rgba(0,166,224,.35);color:var(--secondary-light);}
-.badge-diff-low .diff-dot{background:var(--secondary);}
+.badge-diff-low{background:rgba(37,99,235,.10);border-color:rgba(37,99,235,.32);color:var(--primary-light);}
+.badge-diff-low .diff-dot{background:var(--primary);}
 .badge-diff-med{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32);color:var(--amber-light);}
 .badge-diff-med .diff-dot{background:var(--amber);}
 .badge-mode{background:var(--s3);border-color:var(--border);color:var(--text-muted);}
 
-/* empty state */
-#catalogEmptyState{
-  display:none;flex-direction:column;align-items:center;text-align:center;
-  padding:36px 20px;border-radius:16px;background:var(--s1);border:1px solid var(--border);
+.more-tile{
+  flex:0 0 220px;border-radius:16px;border:1.5px dashed var(--border);
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;
+  color:var(--text-muted);font-size:13px;line-height:1.4;
 }
-#catalogEmptyState.visible{display:flex;}
-#catalogEmptyState svg{width:34px;height:34px;color:var(--secondary-light);margin-bottom:10px;}
-#catalogEmptyState p.title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;}
-#catalogEmptyState p.sub{font-size:12px;color:var(--text-muted);margin-top:4px;max-width:240px;}
+
+/* empty state */
+#emptyState{
+  display:none;flex-direction:column;align-items:center;text-align:center;
+  padding:48px 20px;border-radius:16px;background:var(--s1);border:1px solid var(--border);margin-top:8px;
+}
+#emptyState.visible{display:flex;}
+#emptyState svg{width:36px;height:36px;color:var(--primary-light);margin-bottom:12px;}
+#emptyState p.title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;}
+#emptyState p.sub{font-size:12.5px;color:var(--text-muted);margin-top:4px;max-width:280px;}
 #resetFilterBtn{
-  margin-top:14px;padding:7px 16px;border-radius:999px;background:var(--primary);color:#fff;border:1px solid rgba(123,208,255,.5);
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;
+  margin-top:16px;padding:8px 18px;border-radius:999px;background:var(--primary);color:#fff;border:1px solid rgba(180,197,255,.5);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
 }
 #resetFilterBtn:hover{filter:brightness(1.1);}
 
 /* toast */
 #toast{
-  position:fixed;left:50%;bottom:88px;transform:translate(-50%, 12px);max-width:calc(560px - 32px);width:calc(100% - 32px);
-  background:var(--s2);border:1px solid rgba(0,166,224,.4);border-radius:12px;padding:11px 14px;
-  display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--text);
+  position:fixed;left:50%;bottom:24px;transform:translate(-50%, 12px);max-width:calc(100% - 32px);width:max-content;
+  background:var(--s2);border:1px solid rgba(37,99,235,.45);border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text);
   box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:80;
 }
 #toast.visible{opacity:1;transform:translate(-50%, 0);}
-#toast svg{width:16px;height:16px;color:var(--secondary-light);flex-shrink:0;}
+#toast svg{width:16px;height:16px;color:var(--primary-light);flex-shrink:0;}
 
-/* bottom nav */
-.bottom-nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:50;
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  background:rgba(11,14,21,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid rgba(0,166,224,.16);
-}
-.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center;height:62px;padding:0 8px;}
-.nav-tab{
-  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  min-width:58px;padding:4px 0;text-decoration:none;color:var(--text-muted);background:none;border:none;
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:600;cursor:pointer;
-}
-.nav-tab svg{width:20px;height:20px;}
-.nav-tab.active{color:var(--secondary-light);}
-.nav-tab.active::before{
-  content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:26px;height:2px;
-  background:var(--secondary);box-shadow:0 0 8px var(--secondary);border-radius:2px;
-}
-.nav-tab.inactive{opacity:.55;cursor:default;}
-.nav-tab .soon-tag{
-  position:absolute;top:-2px;right:2px;padding:1px 4px;border-radius:4px;background:var(--s3);
-  font-size:7px;font-weight:700;letter-spacing:.03em;color:var(--text-muted);text-transform:uppercase;
+/* tablet */
+@media (min-width:700px){
+  .hero{min-height:320px;}
+  .hero h2{font-size:34px;}
+  .game-card{flex:0 0 240px;}
+  .more-tile{flex:0 0 240px;}
 }
 
-@media (min-width:560px){
-  .site-header, .bottom-nav{border-left:1px solid rgba(0,166,224,.1);border-right:1px solid rgba(0,166,224,.1);}
+/* desktop */
+@media (min-width:1024px){
+  .header-row{flex-wrap:nowrap;}
+  .hero{min-height:400px;}
+  .hero-content{padding:40px;max-width:560px;}
+  .hero h2{font-size:42px;}
+  .hero p{font-size:15px;}
+  .game-card{flex:0 0 260px;}
+  .more-tile{flex:0 0 260px;}
 }
 </style>
 </head>
@@ -274,171 +251,146 @@ main{padding-top:78px;padding-bottom:96px;}
 <defs>
 <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></symbol>
 <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></symbol>
-<symbol id="i-gamepad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="9" rx="4"></rect><line x1="6" y1="12.5" x2="9" y2="12.5"></line><line x1="7.5" y1="11" x2="7.5" y2="14"></line><circle cx="16" cy="11.5" r="1"></circle><circle cx="18.5" cy="14" r="1"></circle></symbol>
-<symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6L3.5 19a2 2 0 0 0 1.8 3h13.4a2 2 0 0 0 1.8-3L15 8V2"></path><line x1="9" y1="2" x2="15" y2="2"></line><line x1="6.5" y1="14" x2="17.5" y2="14"></line></symbol>
-<symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"></line><circle cx="9" cy="6" r="2"></circle><line x1="4" y1="12" x2="20" y2="12"></line><circle cx="15" cy="12" r="2"></circle><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="7" cy="18" r="2"></circle></symbol>
-<symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></symbol>
-<symbol id="i-snake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16c2 0 2-3 4-3s2 3 4 3 2-3 4-3 2 3 4 3"></path><circle cx="20" cy="7" r="1.6" fill="currentColor" stroke="none"></circle></symbol>
-<symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></symbol>
-<symbol id="i-cards" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="12" height="15" rx="2"></rect><rect x="8" y="2" width="12" height="15" rx="2"></rect></symbol>
-<symbol id="i-letters" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"></circle><line x1="21" y1="21" x2="15" y2="15"></line><line x1="6.5" y1="8.5" x2="13.5" y2="8.5"></line><line x1="6.5" y1="11.5" x2="11.5" y2="11.5"></line></symbol>
-<symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle><path d="M12 3v3M21 12h-3"></path></symbol>
+<symbol id="i-play" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"></path></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6z"></path></symbol>
-<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></symbol>
+<symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle><path d="M12 3v3M21 12h-3"></path></symbol>
 </defs>
 </svg>
 
-<div class="app-shell">
-
 <header class="site-header">
-  <div class="header-inner">
-    <div class="header-top-row">
-      <h1 class="brand">
-        <img src="assets/orisod-icon-detailed.png" alt="" width="26" height="26">
-        <span class="brand-text">
-          <span class="brand-name">ORISOD</span>
-          <span class="brand-badge">Games</span>
-        </span>
-      </h1>
-      <a class="back-pill" href="https://orisod.com">
-        <svg viewBox="0 0 24 24"><use href="#i-arrow-left"></use></svg>
-        <span>orisod.com</span>
-      </a>
+  <div class="wrap header-row">
+    <h1 class="brand">
+      <img src="assets/orisod-icon-detailed.png" alt="" width="28" height="28">
+      <span class="brand-text">
+        <span class="brand-name">ORISOD</span>
+        <span class="brand-badge">Games</span>
+      </span>
+    </h1>
+    <div class="header-search">
+      <svg viewBox="0 0 24 24"><use href="#i-search"></use></svg>
+      <input type="search" id="gameSearchInput" placeholder="Search games..." aria-label="Search games">
     </div>
-    <div class="breadcrumb-row">
-      <span class="crumb-active"><svg viewBox="0 0 24 24"><use href="#i-gamepad"></use></svg>Arcade console</span>
-      <span class="sep">/</span>
-      <span>Lobby</span>
-    </div>
+    <a class="back-pill" href="https://orisod.com">
+      <svg viewBox="0 0 24 24"><use href="#i-arrow-left"></use></svg>
+      <span>orisod.com</span>
+    </a>
   </div>
 </header>
 
+<div class="chips-band">
+  <div class="wrap">
+    <div class="chip-row" id="categoryScroller" role="group" aria-label="Filter games by category">
+      <button type="button" class="chip active" data-cat="all">All <span class="count">4</span></button>
+      <button type="button" class="chip" data-cat="Arcade">Arcade <span class="count">1</span></button>
+      <button type="button" class="chip" data-cat="Logic">Logic <span class="count">2</span></button>
+      <button type="button" class="chip" data-cat="Words">Words <span class="count">1</span></button>
+    </div>
+    <div class="trust-line">
+      <span>Instant play</span><span class="dot">&middot;</span>
+      <span>No install</span><span class="dot">&middot;</span>
+      <span>No account needed</span>
+    </div>
+  </div>
+</div>
+
 <main>
-  <div class="controls">
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 24 24"><use href="#i-search"></use></svg>
-      <input type="search" id="gameSearchInput" placeholder="Search games..." aria-label="Search games">
-      <span class="ready-tag">Ready</span>
+  <div class="wrap">
+
+    <section class="hero" data-cat="Arcade" data-title="Snake">
+      <picture>
+        <source srcset="assets/games-art/snake-hero.avif" type="image/avif">
+        <source srcset="assets/games-art/snake-hero.webp" type="image/webp">
+        <img src="assets/games-art/snake-hero.png" alt="A glowing green segmented snake curving across a dark grid board, chasing a bright yellow cube">
+      </picture>
+      <div class="hero-content">
+        <span class="hero-eyebrow">Featured</span>
+        <h2>Snake</h2>
+        <p>Grow as long as you can without running into yourself or the edge of the board. One classic grid, one simple rule, endless replay.</p>
+        <button type="button" class="hero-play" id="heroPlayBtn">
+          <svg viewBox="0 0 24 24"><use href="#i-play"></use></svg>
+          Play Snake
+        </button>
+      </div>
+    </section>
+
+    <div class="row-head">
+      <h2>All games</h2>
+      <span id="rowCount">4 games</span>
     </div>
-    <div class="pill-scroller" id="categoryScroller" role="group" aria-label="Filter games by category">
-      <button type="button" class="cat-pill active" data-cat="all">All games <span class="count">4</span></button>
-      <button type="button" class="cat-pill" data-cat="Arcade">Arcade <span class="count">1</span></button>
-      <button type="button" class="cat-pill" data-cat="Logic">Logic <span class="count">2</span></button>
-      <button type="button" class="cat-pill" data-cat="Words">Words <span class="count">1</span></button>
+
+    <div class="game-row" id="gameRow">
+      <button type="button" class="game-card" data-cat="Arcade" data-title="Snake">
+        <div class="card-thumb">
+          <picture>
+            <source srcset="assets/games-art/snake-card.avif" type="image/avif">
+            <source srcset="assets/games-art/snake-card.webp" type="image/webp">
+            <img src="assets/games-art/snake-card.png" alt="A glowing green segmented snake curving across a dark grid board, chasing a bright yellow cube" loading="lazy">
+          </picture>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Snake</div>
+          <div class="card-meta">
+            <span class="badge badge-diff-med"><span class="diff-dot"></span>Medium</span>
+            <span class="badge badge-mode">Solo</span>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="game-card" data-cat="Logic" data-title="Sudoku">
+        <div class="card-thumb">
+          <picture>
+            <source srcset="assets/games-art/sudoku-card.avif" type="image/avif">
+            <source srcset="assets/games-art/sudoku-card.webp" type="image/webp">
+            <img src="assets/games-art/sudoku-card.png" alt="A glowing amber 9x9 Sudoku grid partially filled with black numbers" loading="lazy">
+          </picture>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Sudoku</div>
+          <div class="card-meta">
+            <span class="badge badge-diff-med"><span class="diff-dot"></span>Medium</span>
+            <span class="badge badge-mode">Solo</span>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="game-card" data-cat="Logic" data-title="Memory Match">
+        <div class="card-thumb">
+          <picture>
+            <source srcset="assets/games-art/memory-match-card.avif" type="image/avif">
+            <source srcset="assets/games-art/memory-match-card.webp" type="image/webp">
+            <img src="assets/games-art/memory-match-card.png" alt="A memory-match grid of pink tiles with two matching star cards flipped face up" loading="lazy">
+          </picture>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Memory Match</div>
+          <div class="card-meta">
+            <span class="badge badge-diff-low"><span class="diff-dot"></span>Low</span>
+            <span class="badge badge-mode">Solo</span>
+          </div>
+        </div>
+      </button>
+
+      <button type="button" class="game-card" data-cat="Words" data-title="Custom Word Search">
+        <div class="card-thumb">
+          <picture>
+            <source srcset="assets/games-art/custom-word-search-card.avif" type="image/avif">
+            <source srcset="assets/games-art/custom-word-search-card.webp" type="image/webp">
+            <img src="assets/games-art/custom-word-search-card.png" alt="A word-search letter grid with the word Orisod highlighted in cyan" loading="lazy">
+          </picture>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Custom Word Search</div>
+          <div class="card-meta">
+            <span class="badge badge-diff-low"><span class="diff-dot"></span>Low</span>
+            <span class="badge badge-mode">Solo</span>
+          </div>
+        </div>
+      </button>
+
+      <div class="more-tile">More games coming soon</div>
     </div>
-  </div>
 
-  <div class="trust-strip">
-    <span class="item"><svg viewBox="0 0 24 24"><use href="#i-bolt"></use></svg>Instant play</span>
-    <span class="dot">&middot;</span>
-    <span class="item">No install</span>
-    <span class="dot">&middot;</span>
-    <span class="item">No account needed</span>
-  </div>
-
-  <div id="catalogContent">
-
-    <section class="game-section" data-category="Arcade">
-      <div class="section-head accent-arcade">
-        <span class="section-dot" style="background:var(--secondary);box-shadow:0 0 8px var(--secondary);"></span>
-        <h2>Arcade arena</h2>
-        <span class="section-badge" style="background:rgba(0,166,224,.12);border-color:rgba(0,166,224,.35);color:var(--secondary-light);">Reflex</span>
-        <div class="section-line"></div>
-        <span class="section-count">1 title</span>
-      </div>
-      <div class="game-grid">
-        <button type="button" class="game-card accent-arcade" data-cat="Arcade" data-title="Snake">
-          <div class="thumb accent-arcade">
-            <svg class="accent-arcade"><use href="#i-snake"></use></svg>
-            <div class="thumb-tag accent-arcade"><svg viewBox="0 0 24 24"><use href="#i-bolt"></use></svg>Arc</div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-title">Snake</div>
-              <p class="card-desc">Grow long, don't double back.</p>
-            </div>
-            <div class="card-meta">
-              <span class="badge badge-diff-med"><span class="diff-dot"></span>Medium</span>
-              <span class="badge badge-mode">Solo</span>
-            </div>
-          </div>
-        </button>
-      </div>
-    </section>
-
-    <section class="game-section" data-category="Logic">
-      <div class="section-head accent-logic">
-        <span class="section-dot" style="background:var(--primary);box-shadow:0 0 8px var(--primary);"></span>
-        <h2>Logic &amp; mind</h2>
-        <span class="section-badge" style="background:rgba(37,99,235,.12);border-color:rgba(37,99,235,.35);color:var(--primary-light);">Brain</span>
-        <div class="section-line"></div>
-        <span class="section-count">2 titles</span>
-      </div>
-      <div class="game-grid">
-        <button type="button" class="game-card accent-logic" data-cat="Logic" data-title="Sudoku">
-          <div class="thumb accent-logic">
-            <svg class="accent-logic"><use href="#i-grid"></use></svg>
-            <div class="thumb-tag accent-logic"><svg viewBox="0 0 24 24"><use href="#i-grid"></use></svg>9x9</div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-title">Sudoku</div>
-              <p class="card-desc">Fill the grid with pure logic.</p>
-            </div>
-            <div class="card-meta">
-              <span class="badge badge-diff-med"><span class="diff-dot"></span>Medium</span>
-              <span class="badge badge-mode">Solo</span>
-            </div>
-          </div>
-        </button>
-        <button type="button" class="game-card accent-logic" data-cat="Logic" data-title="Memory Match">
-          <div class="thumb accent-logic">
-            <svg class="accent-logic"><use href="#i-cards"></use></svg>
-            <div class="thumb-tag accent-logic"><svg viewBox="0 0 24 24"><use href="#i-cards"></use></svg>Flip</div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-title">Memory Match</div>
-              <p class="card-desc">Flip tiles and match every pair.</p>
-            </div>
-            <div class="card-meta">
-              <span class="badge badge-diff-low"><span class="diff-dot"></span>Low</span>
-              <span class="badge badge-mode">Solo</span>
-            </div>
-          </div>
-        </button>
-      </div>
-    </section>
-
-    <section class="game-section" data-category="Words">
-      <div class="section-head accent-words">
-        <span class="section-dot" style="background:var(--tertiary);box-shadow:0 0 8px var(--tertiary);"></span>
-        <h2>Word lab</h2>
-        <span class="section-badge" style="background:rgba(88,91,230,.12);border-color:rgba(88,91,230,.35);color:var(--tertiary-light);">Lex</span>
-        <div class="section-line"></div>
-        <span class="section-count">1 title</span>
-      </div>
-      <div class="game-grid">
-        <button type="button" class="game-card accent-words" data-cat="Words" data-title="Custom Word Search">
-          <div class="thumb accent-words">
-            <svg class="accent-words"><use href="#i-letters"></use></svg>
-            <div class="thumb-tag accent-words"><svg viewBox="0 0 24 24"><use href="#i-letters"></use></svg>Find</div>
-          </div>
-          <div class="card-body">
-            <div>
-              <div class="card-title">Custom Word Search</div>
-              <p class="card-desc">Build your own list, then find it in the grid.</p>
-            </div>
-            <div class="card-meta">
-              <span class="badge badge-diff-low"><span class="diff-dot"></span>Low</span>
-              <span class="badge badge-mode">Solo</span>
-            </div>
-          </div>
-        </button>
-      </div>
-    </section>
-
-    <div id="catalogEmptyState">
+    <div id="emptyState">
       <svg viewBox="0 0 24 24"><use href="#i-radar"></use></svg>
       <p class="title">No games found</p>
       <p class="sub">Clear your search to see the full lineup.</p>
@@ -453,75 +405,45 @@ main{padding-top:78px;padding-bottom:96px;}
   <span id="toastText"></span>
 </div>
 
-<nav class="bottom-nav" aria-label="Games sections">
-  <div class="bottom-nav-inner">
-    <a class="nav-tab active" href="#top" aria-current="page">
-      <svg viewBox="0 0 24 24"><use href="#i-gamepad"></use></svg>
-      <span>Arcade</span>
-    </a>
-    <button type="button" class="nav-tab inactive" disabled aria-disabled="true">
-      <span class="soon-tag">Soon</span>
-      <svg viewBox="0 0 24 24"><use href="#i-flask"></use></svg>
-      <span>Lab</span>
-    </button>
-    <button type="button" class="nav-tab inactive" disabled aria-disabled="true">
-      <span class="soon-tag">Soon</span>
-      <svg viewBox="0 0 24 24"><use href="#i-sliders"></use></svg>
-      <span>Discover</span>
-    </button>
-    <button type="button" class="nav-tab inactive" disabled aria-disabled="true">
-      <span class="soon-tag">Soon</span>
-      <svg viewBox="0 0 24 24"><use href="#i-bookmark"></use></svg>
-      <span>Saved</span>
-    </button>
-  </div>
-</nav>
-
-</div>
-
 <script>
 (function(){
   var searchInput = document.getElementById('gameSearchInput');
-  var pills = document.querySelectorAll('.cat-pill');
+  var chips = document.querySelectorAll('.chip');
   var cards = document.querySelectorAll('.game-card');
-  var sections = document.querySelectorAll('.game-section');
-  var emptyState = document.getElementById('catalogEmptyState');
+  var moreTile = document.querySelector('.more-tile');
+  var emptyState = document.getElementById('emptyState');
   var resetBtn = document.getElementById('resetFilterBtn');
+  var rowCount = document.getElementById('rowCount');
   var toast = document.getElementById('toast');
   var toastText = document.getElementById('toastText');
   var toastTimer = null;
+  var heroPlayBtn = document.getElementById('heroPlayBtn');
+  var hero = document.querySelector('.hero');
 
   var currentCat = 'all';
   var searchQuery = '';
 
   function applyFilters(){
-    var totalVisible = 0;
-    sections.forEach(function(section){
-      var sectionCards = section.querySelectorAll('.game-card');
-      var visibleInSection = 0;
-      sectionCards.forEach(function(card){
-        var title = card.getAttribute('data-title').toLowerCase();
-        var cat = card.getAttribute('data-cat');
-        var matchesCat = (currentCat === 'all' || cat === currentCat);
-        var matchesSearch = title.indexOf(searchQuery) !== -1;
-        if (matchesCat && matchesSearch) {
-          card.style.display = '';
-          visibleInSection++;
-          totalVisible++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      section.style.display = visibleInSection === 0 ? 'none' : '';
+    var visible = 0;
+    cards.forEach(function(card){
+      var title = card.getAttribute('data-title').toLowerCase();
+      var cat = card.getAttribute('data-cat');
+      var matchesCat = (currentCat === 'all' || cat === currentCat);
+      var matchesSearch = title.indexOf(searchQuery) !== -1;
+      var show = matchesCat && matchesSearch;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
     });
-    emptyState.classList.toggle('visible', totalVisible === 0);
+    moreTile.style.display = visible > 0 ? '' : 'none';
+    emptyState.classList.toggle('visible', visible === 0);
+    rowCount.textContent = visible + (visible === 1 ? ' game' : ' games');
   }
 
-  pills.forEach(function(pill){
-    pill.addEventListener('click', function(){
-      pills.forEach(function(p){ p.classList.remove('active'); });
-      pill.classList.add('active');
-      currentCat = pill.getAttribute('data-cat');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      currentCat = chip.getAttribute('data-cat');
       applyFilters();
     });
   });
@@ -534,7 +456,7 @@ main{padding-top:78px;padding-bottom:96px;}
   resetBtn.addEventListener('click', function(){
     searchInput.value = '';
     searchQuery = '';
-    pills[0].click();
+    chips[0].click();
   });
 
   function showToast(msg){
@@ -548,6 +470,10 @@ main{padding-top:78px;padding-bottom:96px;}
     card.addEventListener('click', function(){
       showToast(card.getAttribute('data-title') + ' is coming soon');
     });
+  });
+
+  heroPlayBtn.addEventListener('click', function(){
+    showToast(hero.getAttribute('data-title') + ' is coming soon');
   });
 })();
 </script>
