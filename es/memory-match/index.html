@@ -55,7 +55,7 @@
           "name": "¿El juego guarda mi mejor puntuación?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Sí, si tu navegador permite el almacenamiento local, tus menos movimientos en este navegador se guardan automáticamente para que intentes superarlos en la próxima partida. Si el almacenamiento local está bloqueado, el juego sigue funcionando, pero no recordará tu mejor puntuación."
+            "text": "Sí, si tu navegador permite el almacenamiento local. Tus menos movimientos se guardan por separado para cada nivel de dificultad, así puedes intentar superar tu propia mejor marca en Fácil, Medio, Difícil o Experto. Si el almacenamiento local está bloqueado, el juego sigue funcionando, pero no recordará tus mejores puntuaciones."
           }
         },
         {
@@ -162,6 +162,28 @@ h1{font-size:26px;margin-bottom:8px;}
   background:var(--s1);border:1px solid var(--border);border-radius:20px;
   padding:20px;
 }
+.difficulty-field{border:0;padding:0;margin:0 0 18px 0;}
+.difficulty-legend{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:0;margin-bottom:8px;}
+.difficulty-group{display:flex;flex-wrap:wrap;gap:8px;}
+.difficulty-option{position:relative;}
+.difficulty-input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none;}
+.difficulty-text{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  min-width:72px;min-height:44px;padding:6px 12px;border-radius:12px;cursor:pointer;
+  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
+  font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .15s,background .15s,color .15s;
+}
+.difficulty-name{font-weight:700;font-size:13px;}
+.difficulty-pairs{font-size:10.5px;opacity:.85;}
+.difficulty-option:hover .difficulty-text{border-color:rgba(37,99,235,.4);}
+.difficulty-input:checked + .difficulty-text{
+  background:var(--primary);border-color:rgba(180,197,255,.5);color:#fff;
+  box-shadow:0 0 14px rgba(37,99,235,.35);
+}
+.difficulty-input:focus-visible + .difficulty-text{
+  outline:3px solid var(--primary-light);outline-offset:2px;
+}
+
 .hud{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
 .hud-stat{display:flex;flex-direction:column;gap:2px;min-width:56px;}
 .hud-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);}
@@ -180,8 +202,10 @@ h1{font-size:26px;margin-bottom:8px;}
 .icon-btn .icon{width:18px;height:18px;flex-shrink:0;}
 
 .board{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
-  max-width:420px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(var(--cols, 4), minmax(44px, 1fr));
+  gap:var(--tile-gap, 10px);width:100%;
+  max-width:calc(var(--cols, 4) * 100px + (var(--cols, 4) - 1) * var(--tile-gap, 10px));
+  margin:0 auto;
 }
 .tile{
   position:relative;aspect-ratio:1/1;min-width:44px;min-height:44px;
@@ -247,10 +271,14 @@ h1{font-size:26px;margin-bottom:8px;}
 .faq-item .q{font-weight:700;color:#fff;margin-bottom:4px;font-size:14px;}
 .faq-item p{margin:0;}
 
+@media (max-width:420px){
+  .wrap{padding-inline:16px;}
+  .game-panel{padding:16px;}
+}
+
 @media (min-width:700px){
   h1{font-size:30px;}
   .game-panel{padding:28px;}
-  .board{max-width:460px;gap:12px;}
 }
 </style>
 </head>
@@ -273,6 +301,16 @@ h1{font-size:26px;margin-bottom:8px;}
 <symbol id="i-diamond" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 L20 12 L12 21 L4 12 Z"></path></symbol>
 <symbol id="i-cross" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3 L14 3 L14 10 L21 10 L21 14 L14 14 L14 21 L10 21 L10 14 L3 14 L3 10 L10 10 Z"></path></symbol>
 <symbol id="i-hexagon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3 L16 3 L20.5 12 L16 21 L8 21 L3.5 12 Z"></path></symbol>
+<symbol id="i-pentagon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L22 9.2 L18.2 20.8 L5.8 20.8 L2 9.2 Z"></path></symbol>
+<symbol id="i-octagon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 2 L16 2 L22 8 L22 16 L16 22 L8 22 L2 16 L2 8 Z"></path></symbol>
+<symbol id="i-ring" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"></path></symbol>
+<symbol id="i-arrow-up" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L21 12 L16 12 L16 22 L8 22 L8 12 L3 12 Z"></path></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 L5 14 L11 14 L10 22 L19 10 L13 10 Z"></path></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22 L3 12 L8 12 L8 2 L16 2 L16 12 L21 12 Z"></path></symbol>
+<symbol id="i-half-circle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 1 0 18z"></path></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="currentColor"><path d="M2 9 L15 9 L15 4 L22 12 L15 20 L15 15 L2 15 Z"></path></symbol>
 </defs>
 </svg>
 
@@ -299,6 +337,28 @@ h1{font-size:26px;margin-bottom:8px;}
     <p class="intro">Voltea dos fichas a la vez y encuentra cada pareja. Tu número de movimientos y tu mejor puntuación se guardan aquí mismo, en tu navegador.</p>
 
     <div class="game-panel">
+      <fieldset class="difficulty-field">
+        <legend class="difficulty-legend">Dificultad</legend>
+        <div class="difficulty-group">
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="easy" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Fácil</span><span class="difficulty-pairs">6 parejas</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="medium" class="difficulty-input" checked>
+            <span class="difficulty-text"><span class="difficulty-name">Medio</span><span class="difficulty-pairs">8 parejas</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="hard" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Difícil</span><span class="difficulty-pairs">10 parejas</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="expert" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Experto</span><span class="difficulty-pairs">18 parejas</span></span>
+          </label>
+        </div>
+      </fieldset>
+
       <div class="hud" role="group" aria-label="Estado de la partida">
         <div class="hud-stat">
           <span class="hud-label">Movimientos</span>
@@ -320,7 +380,7 @@ h1{font-size:26px;margin-bottom:8px;}
         </div>
       </div>
 
-      <div class="board" id="board" role="group" aria-label="Tablero de memorama, 16 fichas"></div>
+      <div class="board" id="board" role="group" aria-label="Tablero de memorama"></div>
 
       <div class="win-panel" id="winPanel" hidden tabindex="-1">
         <h2>¡Resuelto!</h2>
@@ -333,7 +393,7 @@ h1{font-size:26px;margin-bottom:8px;}
 
     <div class="seo-content">
       <h2>Cómo jugar a Memorama</h2>
-      <p>Memorama es el clásico juego de memoria: una cuadrícula de 16 fichas boca abajo esconde 8 parejas de símbolos iguales. Voltea dos fichas a la vez. Si coinciden, se quedan boca arriba. Si no coinciden, se voltean de nuevo boca abajo después de un momento para que lo intentes otra vez. Despeja todo el tablero usando la menor cantidad de movimientos posible.</p>
+      <p>Memorama es el clásico juego de memoria: una cuadrícula de fichas boca abajo esconde parejas de símbolos iguales. Voltea dos fichas a la vez. Si coinciden, se quedan boca arriba. Si no coinciden, se voltean de nuevo boca abajo después de un momento para que lo intentes otra vez. Elige Fácil, Medio, Difícil o Experto para cambiar el tamaño de la cuadrícula, y despeja todo el tablero usando la menor cantidad de movimientos posible.</p>
 
       <h2>Preguntas frecuentes</h2>
       <div class="faq-item">
@@ -342,7 +402,7 @@ h1{font-size:26px;margin-bottom:8px;}
       </div>
       <div class="faq-item">
         <div class="q">¿El juego guarda mi mejor puntuación?</div>
-        <p>Sí, si tu navegador permite el almacenamiento local, tus menos movimientos en este navegador se guardan automáticamente para que intentes superarlos en la próxima partida. Si el almacenamiento local está bloqueado, el juego sigue funcionando, pero no recordará tu mejor puntuación.</p>
+        <p>Sí, si tu navegador permite el almacenamiento local. Tus menos movimientos se guardan por separado para cada nivel de dificultad, así puedes intentar superar tu propia mejor marca en Fácil, Medio, Difícil o Experto. Si el almacenamiento local está bloqueado, el juego sigue funcionando, pero no recordará tus mejores puntuaciones.</p>
       </div>
       <div class="faq-item">
         <div class="q">¿Puedo jugar a Memorama solo con el teclado?</div>
@@ -361,7 +421,16 @@ h1{font-size:26px;margin-bottom:8px;}
 (function(){
   'use strict';
 
-  var STORAGE_KEY = 'orisod-games:memory-match:v1';
+  var STORAGE_KEY = 'orisod-games:memory-match:v2';
+  var LEGACY_KEY = 'orisod-games:memory-match:v1';
+  var DEFAULT_DIFFICULTY = 'medium';
+
+  var LEVELS = {
+    easy:   { id:'easy',   name:'Fácil',   rows:3, cols:4, gap:10, pairs:6 },
+    medium: { id:'medium', name:'Medio',   rows:4, cols:4, gap:10, pairs:8 },
+    hard:   { id:'hard',   name:'Difícil', rows:4, cols:5, gap:9,  pairs:10 },
+    expert: { id:'expert', name:'Experto', rows:6, cols:6, gap:8,  pairs:18 }
+  };
 
   var SYMBOLS = [
     { id:'star', name:'estrella' },
@@ -371,7 +440,17 @@ h1{font-size:26px;margin-bottom:8px;}
     { id:'square', name:'cuadrado' },
     { id:'diamond', name:'diamante' },
     { id:'cross', name:'cruz' },
-    { id:'hexagon', name:'hexágono' }
+    { id:'hexagon', name:'hexágono' },
+    { id:'pentagon', name:'pentágono' },
+    { id:'octagon', name:'octágono' },
+    { id:'ring', name:'anillo' },
+    { id:'arrow-up', name:'flecha hacia arriba' },
+    { id:'bolt', name:'rayo' },
+    { id:'moon', name:'luna' },
+    { id:'arrow-down', name:'flecha hacia abajo' },
+    { id:'half-circle', name:'semicírculo' },
+    { id:'pin', name:'marcador' },
+    { id:'arrow-right', name:'flecha hacia la derecha' }
   ];
 
   function plural(n, one, many){ return n === 1 ? one : many; }
@@ -380,12 +459,14 @@ h1{font-size:26px;margin-bottom:8px;}
     tileHidden: function(n){ return 'Ficha ' + n + ', oculta'; },
     tileShowing: function(n, name){ return 'Ficha ' + n + ', ' + name + ', visible'; },
     tileMatched: function(n, name){ return 'Ficha ' + n + ', ' + name + ', emparejada'; },
+    boardLabel: function(n){ return 'Tablero de memorama, ' + n + ' fichas'; },
     enableSound: 'Activar sonido',
     muteSound: 'Silenciar sonido',
     matchFound: 'Pareja encontrada.',
     noMatch: 'No es pareja, inténtalo de nuevo.',
     movesAnnounce: function(n){ return 'Movimiento ' + n + '.'; },
     solvedAnnounce: function(moves){ return 'Resuelto en ' + moves + ' ' + plural(moves, 'movimiento', 'movimientos') + '.'; },
+    difficultyAnnounce: function(name, pairs){ return 'Dificultad establecida en ' + name + ', ' + pairs + ' ' + plural(pairs, 'pareja', 'parejas') + '.'; },
     winSummary: function(moves, seconds, bestMoves, isNewBest){
       var s = 'Lo resolviste en ' + moves + ' ' + plural(moves, 'movimiento', 'movimientos');
       if (seconds !== null) {
@@ -401,8 +482,27 @@ h1{font-size:26px;margin-bottom:8px;}
     }
   };
 
+  function emptyBest(){ return { easy: null, medium: null, hard: null, expert: null }; }
+
+  function sanitizeState(parsed){
+    var best = emptyBest();
+    if (parsed && parsed.best && typeof parsed.best === 'object') {
+      Object.keys(best).forEach(function(k){
+        var v = parsed.best[k];
+        best[k] = (typeof v === 'number' && v > 0) ? v : null;
+      });
+    }
+    var difficulty = (parsed && typeof parsed.difficulty === 'string' && LEVELS.hasOwnProperty(parsed.difficulty))
+      ? parsed.difficulty : DEFAULT_DIFFICULTY;
+    return {
+      soundEnabled: !!(parsed && parsed.soundEnabled),
+      difficulty: difficulty,
+      best: best
+    };
+  }
+
   var Storage = (function(){
-    var memory = { soundEnabled: false, bestMoves: null };
+    var memory = sanitizeState(null);
     var available = false;
     try {
       var t = '__orisod_test__';
@@ -411,16 +511,29 @@ h1{font-size:26px;margin-bottom:8px;}
       available = true;
     } catch (e) { available = false; }
 
+    function migrateLegacy(){
+      try {
+        var raw = window.localStorage.getItem(LEGACY_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        var migrated = sanitizeState(null);
+        migrated.soundEnabled = !!parsed.soundEnabled;
+        if (typeof parsed.bestMoves === 'number' && parsed.bestMoves > 0) {
+          migrated.best.medium = parsed.bestMoves;
+        }
+        window.localStorage.removeItem(LEGACY_KEY);
+        return migrated;
+      } catch (e) { return null; }
+    }
+
     function load(){
       if (!available) return memory;
       try {
         var raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return memory;
-        var parsed = JSON.parse(raw);
-        return {
-          soundEnabled: !!parsed.soundEnabled,
-          bestMoves: (typeof parsed.bestMoves === 'number' && parsed.bestMoves > 0) ? parsed.bestMoves : null
-        };
+        if (raw) return sanitizeState(JSON.parse(raw));
+        var migrated = migrateLegacy();
+        if (migrated) { save(migrated); return migrated; }
+        return sanitizeState(null);
       } catch (e) { return memory; }
     }
     function save(next){
@@ -466,6 +579,7 @@ h1{font-size:26px;margin-bottom:8px;}
   })();
 
   var state = Storage.load();
+  var currentLevel = LEVELS[state.difficulty] || LEVELS[DEFAULT_DIFFICULTY];
 
   var boardEl = document.getElementById('board');
   var movesValueEl = document.getElementById('movesValue');
@@ -479,6 +593,7 @@ h1{font-size:26px;margin-bottom:8px;}
   var winSummaryEl = document.getElementById('winSummary');
   var playAgainBtn = document.getElementById('playAgainBtn');
   var liveRegion = document.getElementById('liveRegion');
+  var difficultyInputs = Array.prototype.slice.call(document.querySelectorAll('.difficulty-input'));
 
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -504,20 +619,30 @@ h1{font-size:26px;margin-bottom:8px;}
   }
 
   function updateBestUI(){
-    if (state.bestMoves) {
+    var best = state.best[currentLevel.id];
+    if (best) {
       bestStatEl.hidden = false;
-      bestValueEl.textContent = String(state.bestMoves);
+      bestValueEl.textContent = String(best);
     } else {
       bestStatEl.hidden = true;
     }
   }
 
-  function buildBoard(){
+  function syncDifficultyInputs(){
+    difficultyInputs.forEach(function(input){
+      input.checked = (input.value === currentLevel.id);
+    });
+  }
+
+  function buildBoard(level){
     boardEl.innerHTML = '';
     tiles = [];
+    boardEl.style.setProperty('--cols', level.cols);
+    boardEl.style.setProperty('--tile-gap', level.gap + 'px');
+    boardEl.setAttribute('aria-label', STR.boardLabel(level.rows * level.cols));
 
     var deck = [];
-    SYMBOLS.forEach(function(sym, i){ deck.push(i); deck.push(i); });
+    for (var s = 0; s < level.pairs; s++) { deck.push(s); deck.push(s); }
     for (var i = deck.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
@@ -559,6 +684,8 @@ h1{font-size:26px;margin-bottom:8px;}
   }
 
   function resetGame(){
+    currentLevel = LEVELS[state.difficulty] || LEVELS[DEFAULT_DIFFICULTY];
+    syncDifficultyInputs();
     firstPick = null;
     secondPick = null;
     busy = false;
@@ -567,7 +694,8 @@ h1{font-size:26px;margin-bottom:8px;}
     startTime = null;
     movesValueEl.textContent = '0';
     winPanel.hidden = true;
-    buildBoard();
+    updateBestUI();
+    buildBoard(currentLevel);
   }
 
   function handlePick(idx){
@@ -607,7 +735,7 @@ h1{font-size:26px;margin-bottom:8px;}
       announce(STR.movesAnnounce(moveCount) + ' ' + STR.matchFound);
       firstPick = null; secondPick = null; busy = false;
 
-      if (matchedPairs === SYMBOLS.length) {
+      if (matchedPairs === currentLevel.pairs) {
         finishGame();
       }
     } else {
@@ -627,10 +755,14 @@ h1{font-size:26px;margin-bottom:8px;}
 
   function finishGame(){
     var elapsedSeconds = startTime !== null ? Math.round((performance.now() - startTime) / 1000) : null;
-    var previousBest = state.bestMoves;
+    var levelId = currentLevel.id;
+    var previousBest = state.best[levelId];
     var isNewBest = previousBest === null || moveCount < previousBest;
     if (isNewBest) {
-      state = { soundEnabled: state.soundEnabled, bestMoves: moveCount };
+      var nextBest = emptyBest();
+      Object.keys(state.best).forEach(function(k){ nextBest[k] = state.best[k]; });
+      nextBest[levelId] = moveCount;
+      state = { soundEnabled: state.soundEnabled, difficulty: state.difficulty, best: nextBest };
       Storage.save(state);
     }
     updateBestUI();
@@ -642,16 +774,27 @@ h1{font-size:26px;margin-bottom:8px;}
   }
 
   soundToggleBtn.addEventListener('click', function(){
-    state = { soundEnabled: !state.soundEnabled, bestMoves: state.bestMoves };
+    state = { soundEnabled: !state.soundEnabled, difficulty: state.difficulty, best: state.best };
     Storage.save(state);
     updateSoundUI();
+  });
+
+  difficultyInputs.forEach(function(input){
+    input.addEventListener('change', function(){
+      if (!input.checked) return;
+      var level = LEVELS[input.value];
+      if (!level) return;
+      state = { soundEnabled: state.soundEnabled, difficulty: level.id, best: state.best };
+      Storage.save(state);
+      announce(STR.difficultyAnnounce(level.name, level.pairs));
+      resetGame();
+    });
   });
 
   newGameBtn.addEventListener('click', function(){ resetGame(); });
   playAgainBtn.addEventListener('click', function(){ resetGame(); });
 
   updateSoundUI();
-  updateBestUI();
   resetGame();
 })();
 </script>
