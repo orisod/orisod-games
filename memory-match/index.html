@@ -105,6 +105,8 @@
   --amber:#f59e0b; --amber-light:#fcd9a8;
   --secondary-light:#7bd0ff;
   --danger:#f87171; --success:#4ade80;
+  --pink-900:#831843; --pink-800:#9d174d; --pink-700:#be185d; --pink-600:#db2777;
+  --pink-500:#ec4899; --pink-400:#f472b6; --pink-300:#f9a8d4;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;background:var(--s0);}
@@ -159,9 +161,22 @@ h1{font-size:26px;margin-bottom:8px;}
 
 /* game panel */
 .game-panel{
-  background:var(--s1);border:1px solid var(--border);border-radius:20px;
+  position:relative;overflow:hidden;
+  background-image:
+    radial-gradient(circle at 90% 8%, rgba(236,72,153,.18) 0%, transparent 42%),
+    radial-gradient(circle at 6% 96%, rgba(249,168,212,.12) 0%, transparent 48%),
+    linear-gradient(160deg, #11182b 0%, #080d1a 100%);
+  border:1px solid var(--border);border-radius:20px;
   padding:20px;
 }
+.game-panel::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(236,72,153,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236,72,153,.05) 1px, transparent 1px);
+  background-size:34px 34px;
+}
+.game-panel > *{position:relative;z-index:1;}
 .difficulty-field{border:0;padding:0;margin:0 0 18px 0;}
 .difficulty-legend{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:0;margin-bottom:8px;}
 .difficulty-group{display:flex;flex-wrap:wrap;gap:8px;}
@@ -175,19 +190,21 @@ h1{font-size:26px;margin-bottom:8px;}
 }
 .difficulty-name{font-weight:700;font-size:13px;}
 .difficulty-pairs{font-size:10.5px;opacity:.85;}
-.difficulty-option:hover .difficulty-text{border-color:rgba(37,99,235,.4);}
+.difficulty-option:hover .difficulty-text{border-color:rgba(236,72,153,.45);}
 .difficulty-input:checked + .difficulty-text{
-  background:var(--primary);border-color:rgba(180,197,255,.5);color:#fff;
-  box-shadow:0 0 14px rgba(37,99,235,.35);
+  background:linear-gradient(160deg, var(--pink-500) 0%, var(--pink-700) 100%);
+  border-color:rgba(249,168,212,.55);color:#fff;
+  box-shadow:0 0 14px rgba(236,72,153,.4);
 }
 .difficulty-input:focus-visible + .difficulty-text{
-  outline:3px solid var(--primary-light);outline-offset:2px;
+  outline:3px solid var(--pink-300);outline-offset:2px;
 }
 
 .hud{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
 .hud-stat{display:flex;flex-direction:column;gap:2px;min-width:56px;}
 .hud-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);}
 .hud-value{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:#fff;}
+#bestValue{color:var(--pink-300);}
 .hud-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
 
 .icon-btn{
@@ -196,8 +213,8 @@ h1{font-size:26px;margin-bottom:8px;}
   cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;
   transition:border-color .15s,color .15s;
 }
-.icon-btn:hover{border-color:rgba(37,99,235,.5);color:#fff;}
-.icon-btn:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+.icon-btn:hover{border-color:rgba(236,72,153,.5);color:#fff;}
+.icon-btn:focus-visible{outline:3px solid var(--pink-300);outline-offset:2px;}
 .icon-btn.icon-only{padding:0;width:44px;}
 .icon-btn .icon{width:18px;height:18px;flex-shrink:0;}
 
@@ -206,13 +223,16 @@ h1{font-size:26px;margin-bottom:8px;}
   gap:var(--tile-gap, 10px);width:100%;
   max-width:calc(var(--cols, 4) * 100px + (var(--cols, 4) - 1) * var(--tile-gap, 10px));
   margin:0 auto;
+  background:linear-gradient(180deg, #1a0f22 0%, #0d0714 100%);
+  border:1.5px solid rgba(236,72,153,.3);border-radius:18px;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
 }
 .tile{
   position:relative;aspect-ratio:1/1;min-width:44px;min-height:44px;
   background:transparent;border:none;padding:0;cursor:pointer;perspective:800px;
 }
 .tile:disabled{cursor:default;}
-.tile:focus-visible{outline:3px solid var(--primary-light);outline-offset:3px;border-radius:12px;}
+.tile:focus-visible{outline:3px solid var(--pink-300);outline-offset:3px;border-radius:14px;}
 .tile-inner{
   display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;
   transition:transform .45s;
@@ -220,48 +240,71 @@ h1{font-size:26px;margin-bottom:8px;}
 .tile.flipped .tile-inner,.tile.matched .tile-inner{transform:rotateY(180deg);}
 .tile-face{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  backface-visibility:hidden;border-radius:12px;border:1px solid var(--s5);
-  box-shadow:0 2px 6px rgba(0,0,0,.35);
+  backface-visibility:hidden;border-radius:14px;
+  box-shadow:0 3px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07), inset 0 -3px 6px rgba(0,0,0,.25);
 }
-.tile-back{background:var(--s4);color:var(--text-muted);}
-.tile-back .tile-icon{width:20px;height:20px;opacity:.6;}
-.tile:hover:not(:disabled) .tile-back{background:var(--s5);border-color:rgba(37,99,235,.5);}
-.tile-front{background:var(--s3);border-color:var(--s5);transform:rotateY(180deg);}
-.tile-front .tile-icon{width:28px;height:28px;}
-.sym-0{color:var(--primary-light);}
-.sym-1{color:var(--violet-light);}
-.sym-2{color:var(--amber-light);}
-.sym-3{color:var(--secondary-light);}
-.tile.matched .tile-front{border-color:rgba(74,222,128,.6);box-shadow:0 0 0 2px rgba(74,222,128,.25) inset;}
-.tile.mismatch .tile-front{border-color:rgba(248,113,113,.7);box-shadow:0 0 0 2px rgba(248,113,113,.25) inset;}
+.tile-back{
+  background:linear-gradient(160deg, #3a1530 0%, #230d1c 100%);
+  border:1px solid rgba(236,72,153,.2);color:var(--pink-300);
+}
+.tile-back .tile-icon{width:20px;height:20px;opacity:.65;}
+.tile:hover:not(:disabled) .tile-back{
+  background:linear-gradient(160deg, #4a1c3d 0%, #2c0f24 100%);
+  border-color:rgba(236,72,153,.5);
+}
+.tile-front{
+  background:linear-gradient(160deg, var(--pink-600) 0%, var(--pink-900) 100%);
+  border:1px solid rgba(249,168,212,.35);transform:rotateY(180deg);
+}
+.tile-front .tile-icon{
+  width:28px;height:28px;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.3)) drop-shadow(0 2px 3px rgba(0,0,0,.5));
+}
+.tile.matched .tile-front{
+  border-color:rgba(249,168,212,.85);
+  box-shadow:0 0 0 2px rgba(236,72,153,.4) inset, 0 0 14px rgba(236,72,153,.45);
+}
+.tile.mismatch .tile-front{
+  border-color:rgba(248,113,113,.75);
+  box-shadow:0 0 0 2px rgba(248,113,113,.3) inset;
+  animation:tileShake .3s ease-in-out 2;
+}
+@keyframes tileShake{
+  0%,100%{transform:translateX(0) rotateY(180deg);}
+  25%{transform:translateX(-3px) rotateY(180deg);}
+  75%{transform:translateX(3px) rotateY(180deg);}
+}
 .tile-mark{
-  position:absolute;top:4px;right:4px;width:16px;height:16px;border-radius:50%;
+  position:absolute;top:4px;right:4px;width:17px;height:17px;border-radius:6px;
   display:none;align-items:center;justify-content:center;
+  box-shadow:0 1px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.25);
 }
 .tile-mark svg{width:10px;height:10px;}
-.tile-check{background:var(--success);color:#04310f;}
-.tile-cross{background:var(--danger);color:#450a0a;}
+.tile-check{background:linear-gradient(160deg, var(--success), #1f7a3f);color:#04310f;}
+.tile-cross{background:linear-gradient(160deg, var(--danger), #8a1c1c);color:#450a0a;}
 .tile.matched .tile-check{display:flex;}
 .tile.mismatch .tile-cross{display:flex;}
 
 @media (prefers-reduced-motion: reduce){
   .tile-inner{transition:none;}
+  .tile.mismatch .tile-front{animation:none;}
 }
 
 .win-panel{
   margin-top:20px;padding:22px;border-radius:16px;background:var(--s2);
   border:1px solid rgba(74,222,128,.4);text-align:center;
 }
-.win-panel:focus-visible,.win-panel:focus{outline:3px solid var(--primary-light);outline-offset:3px;}
+.win-panel:focus-visible,.win-panel:focus{outline:3px solid var(--pink-300);outline-offset:3px;}
 .win-panel h2{font-size:19px;margin-bottom:8px;color:#fff;}
 .win-panel p{font-size:14px;color:var(--text-muted);margin:0 0 16px 0;line-height:1.5;}
 .primary-btn{
-  min-height:44px;padding:0 22px;border-radius:999px;background:var(--primary);color:#fff;
-  border:1px solid rgba(180,197,255,.5);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  min-height:44px;padding:0 22px;border-radius:999px;
+  background:linear-gradient(160deg, var(--pink-500) 0%, var(--pink-700) 100%);color:#fff;
+  border:1px solid rgba(249,168,212,.5);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
   font-size:14px;cursor:pointer;transition:filter .15s;
 }
 .primary-btn:hover{filter:brightness(1.1);}
-.primary-btn:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+.primary-btn:focus-visible{outline:3px solid var(--pink-300);outline-offset:2px;}
 
 .seo-content{max-width:600px;margin:40px auto 0;}
 .seo-content h2{font-size:17px;margin-bottom:10px;margin-top:26px;}
@@ -286,6 +329,10 @@ h1{font-size:26px;margin-bottom:8px;}
 
 <svg class="visually-hidden" aria-hidden="true">
 <defs>
+<linearGradient id="iconGradient" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0%" stop-color="#F9A8D4"></stop>
+  <stop offset="100%" stop-color="#EC4899"></stop>
+</linearGradient>
 <symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></symbol>
 <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"></path><polyline points="21 3 21 9 15 9"></polyline></symbol>
 <symbol id="i-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></symbol>
@@ -293,24 +340,24 @@ h1{font-size:26px;margin-bottom:8px;}
 <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></symbol>
 <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
 <symbol id="i-back" viewBox="0 0 24 24"><text x="12" y="17.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="currentColor">?</text></symbol>
-<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 L14.6 8.7 L20.8 9.3 L16.1 13.5 L17.5 19.6 L12 16.4 L6.5 19.6 L7.9 13.5 L3.2 9.3 L9.4 8.7 Z"></path></symbol>
-<symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21 C12 21 4.8 16.6 2.4 11.9 C0.7 8.4 3 4.8 6.8 4.8 C8.8 4.8 10.4 5.8 12 7.8 C13.6 5.8 15.2 4.8 17.2 4.8 C21 4.8 23.3 8.4 21.6 11.9 C19.2 16.6 12 21 12 21 Z"></path></symbol>
-<symbol id="i-circle" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"></circle></symbol>
-<symbol id="i-triangle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 L21 19 L3 19 Z"></path></symbol>
-<symbol id="i-square" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"></rect></symbol>
-<symbol id="i-diamond" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 L20 12 L12 21 L4 12 Z"></path></symbol>
-<symbol id="i-cross" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3 L14 3 L14 10 L21 10 L21 14 L14 14 L14 21 L10 21 L10 14 L3 14 L3 10 L10 10 Z"></path></symbol>
-<symbol id="i-hexagon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3 L16 3 L20.5 12 L16 21 L8 21 L3.5 12 Z"></path></symbol>
-<symbol id="i-pentagon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L22 9.2 L18.2 20.8 L5.8 20.8 L2 9.2 Z"></path></symbol>
-<symbol id="i-octagon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 2 L16 2 L22 8 L22 16 L16 22 L8 22 L2 16 L2 8 Z"></path></symbol>
-<symbol id="i-ring" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"></path></symbol>
-<symbol id="i-arrow-up" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L21 12 L16 12 L16 22 L8 22 L8 12 L3 12 Z"></path></symbol>
-<symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 L5 14 L11 14 L10 22 L19 10 L13 10 Z"></path></symbol>
-<symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></symbol>
-<symbol id="i-arrow-down" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22 L3 12 L8 12 L8 2 L16 2 L16 12 L21 12 Z"></path></symbol>
-<symbol id="i-half-circle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 1 0 18z"></path></symbol>
-<symbol id="i-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path></symbol>
-<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="currentColor"><path d="M2 9 L15 9 L15 4 L22 12 L15 20 L15 15 L2 15 Z"></path></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 3 L14.6 8.7 L20.8 9.3 L16.1 13.5 L17.5 19.6 L12 16.4 L6.5 19.6 L7.9 13.5 L3.2 9.3 L9.4 8.7 Z"></path></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 21 C12 21 4.8 16.6 2.4 11.9 C0.7 8.4 3 4.8 6.8 4.8 C8.8 4.8 10.4 5.8 12 7.8 C13.6 5.8 15.2 4.8 17.2 4.8 C21 4.8 23.3 8.4 21.6 11.9 C19.2 16.6 12 21 12 21 Z"></path></symbol>
+<symbol id="i-circle" viewBox="0 0 24 24" fill="url(#iconGradient)"><circle cx="12" cy="12" r="8"></circle></symbol>
+<symbol id="i-triangle" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 4 L21 19 L3 19 Z"></path></symbol>
+<symbol id="i-square" viewBox="0 0 24 24" fill="url(#iconGradient)"><rect x="5" y="5" width="14" height="14" rx="2"></rect></symbol>
+<symbol id="i-diamond" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 3 L20 12 L12 21 L4 12 Z"></path></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M10 3 L14 3 L14 10 L21 10 L21 14 L14 14 L14 21 L10 21 L10 14 L3 14 L3 10 L10 10 Z"></path></symbol>
+<symbol id="i-hexagon" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M8 3 L16 3 L20.5 12 L16 21 L8 21 L3.5 12 Z"></path></symbol>
+<symbol id="i-pentagon" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 2 L22 9.2 L18.2 20.8 L5.8 20.8 L2 9.2 Z"></path></symbol>
+<symbol id="i-octagon" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M8 2 L16 2 L22 8 L22 16 L16 22 L8 22 L2 16 L2 8 Z"></path></symbol>
+<symbol id="i-ring" viewBox="0 0 24 24" fill="url(#iconGradient)"><path fill-rule="evenodd" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"></path></symbol>
+<symbol id="i-arrow-up" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 2 L21 12 L16 12 L16 22 L8 22 L8 12 L3 12 Z"></path></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M13 2 L5 14 L11 14 L10 22 L19 10 L13 10 Z"></path></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 22 L3 12 L8 12 L8 2 L16 2 L16 12 L21 12 Z"></path></symbol>
+<symbol id="i-half-circle" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 3a9 9 0 0 1 0 18z"></path></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="url(#iconGradient)"><path d="M2 9 L15 9 L15 4 L22 12 L15 20 L15 15 L2 15 Z"></path></symbol>
 </defs>
 </svg>
 
