@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2GMNDCVMK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-V2GMNDCVMK");
+</script>
+<title>Memory match – Free browser game | Orisod Games</title>
+<meta name="description" content="Play Memory Match free in your browser. Flip tiles, find every pair, and track your moves. No downloads and no accounts, ever.">
+<link rel="canonical" href="https://games.orisod.com/memory-match/">
+<link rel="alternate" hreflang="en" href="https://games.orisod.com/memory-match/">
+<link rel="alternate" hreflang="es" href="https://games.orisod.com/es/memory-match/">
+<link rel="alternate" hreflang="x-default" href="https://games.orisod.com/memory-match/">
+<link rel="icon" href="../assets/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.ico">
+<meta name="theme-color" content="#0b0e15">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Memory Match",
+      "description": "Play Memory Match free in your browser. Flip tiles, find every pair, and track your moves. No downloads and no accounts, ever.",
+      "url": "https://games.orisod.com/memory-match/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any (runs in browser)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my progress or score uploaded anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Memory Match runs entirely in your browser. Your move count and best score are stored only in your browser's local storage, and nothing is sent to a server."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the game save my best score?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, if your browser allows local storage, your fewest moves in this browser are saved automatically so you can try to beat them next round. If local storage is blocked, the game still works, it just will not remember your best score."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I play Memory Match with a keyboard only?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Tab moves between tiles and Enter or Space flips the focused tile. A visible focus outline shows which tile is selected at every step."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a time limit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Memory Match tracks how long you take and how many moves you use, but there is no countdown and no penalty for taking your time."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+@font-face{
+  font-family:'Inter';
+  src:url('../assets/fonts/Inter-Variable.woff2') format('woff2-variations'),
+      url('../assets/fonts/Inter-Variable.woff2') format('woff2');
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Plus Jakarta Sans';
+  src:url('../assets/fonts/PlusJakartaSans-Variable.woff2') format('woff2-variations'),
+      url('../assets/fonts/PlusJakartaSans-Variable.woff2') format('woff2');
+  font-weight:200 800;
+  font-style:normal;
+  font-display:swap;
+}
+:root{
+  --s0:#0b0e15; --s1:#12151d; --s2:#191c26; --s3:#22262f; --s4:#2b2e38; --s5:#32353d;
+  --primary:#2563eb; --primary-light:#b4c5ff;
+  --violet:#7c5cff; --violet-light:#cabdff;
+  --text:#f1f5f9; --text-muted:#93a0b4;
+  --border:#262b36; --border-soft:#1c2029;
+  --amber:#f59e0b; --amber-light:#fcd9a8;
+  --secondary-light:#7bd0ff;
+  --danger:#f87171; --success:#4ade80;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--s0);}
+body{
+  min-height:100vh;
+  font-family:'Inter',Arial,Helvetica,sans-serif;
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(37,99,235,.12) 0%, transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(124,92,255,.12) 0%, transparent 44%),
+    radial-gradient(circle at 50% 95%, rgba(37,99,235,.08) 0%, transparent 50%);
+}
+h1,h2{font-family:'Plus Jakarta Sans',Arial,Helvetica,sans-serif;margin:0;}
+img{max-width:100%;display:block;}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+
+.wrap{max-width:760px;margin:0 auto;padding-inline:20px;}
+
+/* header */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,14,21,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.header-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-block:12px;
+}
+.brand{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none;color:inherit;}
+.brand img{height:28px;width:28px;border-radius:7px;}
+.brand-text{display:flex;align-items:center;gap:6px;}
+.brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;letter-spacing:.03em;color:#fff;}
+.brand-badge{
+  padding:2px 7px;border-radius:4px;background:rgba(37,99,235,.22);border:1px solid rgba(37,99,235,.55);
+  color:var(--secondary-light);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+}
+.back-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;
+  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
+  text-decoration:none;font-size:12px;transition:border-color .15s,color .15s;flex-shrink:0;
+}
+.back-pill:hover{border-color:rgba(37,99,235,.5);color:var(--primary-light);}
+.back-pill:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+.back-pill svg{width:12px;height:12px;transition:transform .15s;}
+.back-pill:hover svg{transform:translateX(-2px);}
+
+main{padding-block:28px 56px;}
+
+h1{font-size:26px;margin-bottom:8px;}
+.intro{font-size:14.5px;color:var(--text-muted);line-height:1.6;margin:0 0 24px 0;max-width:560px;}
+
+/* game panel */
+.game-panel{
+  background:var(--s1);border:1px solid var(--border);border-radius:20px;
+  padding:20px;
+}
+.hud{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
+.hud-stat{display:flex;flex-direction:column;gap:2px;min-width:56px;}
+.hud-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);}
+.hud-value{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:#fff;}
+.hud-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+
+.icon-btn{
+  min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 16px;border-radius:999px;background:var(--s2);border:1px solid var(--border);color:var(--text);
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;
+  transition:border-color .15s,color .15s;
+}
+.icon-btn:hover{border-color:rgba(37,99,235,.5);color:#fff;}
+.icon-btn:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+.icon-btn.icon-only{padding:0;width:44px;}
+.icon-btn .icon{width:18px;height:18px;flex-shrink:0;}
+
+.board{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  max-width:420px;margin:0 auto;
+}
+.tile{
+  position:relative;aspect-ratio:1/1;min-width:44px;min-height:44px;
+  background:transparent;border:none;padding:0;cursor:pointer;perspective:800px;
+}
+.tile:disabled{cursor:default;}
+.tile:focus-visible{outline:3px solid var(--primary-light);outline-offset:3px;border-radius:12px;}
+.tile-inner{
+  display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;
+  transition:transform .45s;
+}
+.tile.flipped .tile-inner,.tile.matched .tile-inner{transform:rotateY(180deg);}
+.tile-face{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;border-radius:12px;border:1px solid var(--s5);
+  box-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+.tile-back{background:var(--s4);color:var(--text-muted);}
+.tile-back .tile-icon{width:20px;height:20px;opacity:.6;}
+.tile:hover:not(:disabled) .tile-back{background:var(--s5);border-color:rgba(37,99,235,.5);}
+.tile-front{background:var(--s3);border-color:var(--s5);transform:rotateY(180deg);}
+.tile-front .tile-icon{width:28px;height:28px;}
+.sym-0{color:var(--primary-light);}
+.sym-1{color:var(--violet-light);}
+.sym-2{color:var(--amber-light);}
+.sym-3{color:var(--secondary-light);}
+.tile.matched .tile-front{border-color:rgba(74,222,128,.6);box-shadow:0 0 0 2px rgba(74,222,128,.25) inset;}
+.tile.mismatch .tile-front{border-color:rgba(248,113,113,.7);box-shadow:0 0 0 2px rgba(248,113,113,.25) inset;}
+.tile-mark{
+  position:absolute;top:4px;right:4px;width:16px;height:16px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+}
+.tile-mark svg{width:10px;height:10px;}
+.tile-check{background:var(--success);color:#04310f;}
+.tile-cross{background:var(--danger);color:#450a0a;}
+.tile.matched .tile-check{display:flex;}
+.tile.mismatch .tile-cross{display:flex;}
+
+@media (prefers-reduced-motion: reduce){
+  .tile-inner{transition:none;}
+}
+
+.win-panel{
+  margin-top:20px;padding:22px;border-radius:16px;background:var(--s2);
+  border:1px solid rgba(74,222,128,.4);text-align:center;
+}
+.win-panel:focus-visible,.win-panel:focus{outline:3px solid var(--primary-light);outline-offset:3px;}
+.win-panel h2{font-size:19px;margin-bottom:8px;color:#fff;}
+.win-panel p{font-size:14px;color:var(--text-muted);margin:0 0 16px 0;line-height:1.5;}
+.primary-btn{
+  min-height:44px;padding:0 22px;border-radius:999px;background:var(--primary);color:#fff;
+  border:1px solid rgba(180,197,255,.5);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;
+  font-size:14px;cursor:pointer;transition:filter .15s;
+}
+.primary-btn:hover{filter:brightness(1.1);}
+.primary-btn:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+
+.seo-content{max-width:600px;margin:40px auto 0;}
+.seo-content h2{font-size:17px;margin-bottom:10px;margin-top:26px;}
+.seo-content h2:first-child{margin-top:0;}
+.seo-content p{font-size:14px;color:var(--text-muted);line-height:1.6;margin:0 0 8px 0;}
+.faq-item{margin-bottom:16px;}
+.faq-item .q{font-weight:700;color:#fff;margin-bottom:4px;font-size:14px;}
+.faq-item p{margin:0;}
+
+@media (min-width:700px){
+  h1{font-size:30px;}
+  .game-panel{padding:28px;}
+  .board{max-width:460px;gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<svg class="visually-hidden" aria-hidden="true">
+<defs>
+<symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"></path><polyline points="21 3 21 9 15 9"></polyline></symbol>
+<symbol id="i-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></symbol>
+<symbol id="i-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><line x1="16" y1="9" x2="22" y2="15"></line><line x1="22" y1="9" x2="16" y2="15"></line></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><text x="12" y="17.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="currentColor">?</text></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 L14.6 8.7 L20.8 9.3 L16.1 13.5 L17.5 19.6 L12 16.4 L6.5 19.6 L7.9 13.5 L3.2 9.3 L9.4 8.7 Z"></path></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21 C12 21 4.8 16.6 2.4 11.9 C0.7 8.4 3 4.8 6.8 4.8 C8.8 4.8 10.4 5.8 12 7.8 C13.6 5.8 15.2 4.8 17.2 4.8 C21 4.8 23.3 8.4 21.6 11.9 C19.2 16.6 12 21 12 21 Z"></path></symbol>
+<symbol id="i-circle" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"></circle></symbol>
+<symbol id="i-triangle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 L21 19 L3 19 Z"></path></symbol>
+<symbol id="i-square" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"></rect></symbol>
+<symbol id="i-diamond" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 L20 12 L12 21 L4 12 Z"></path></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24" fill="currentColor"><path d="M10 3 L14 3 L14 10 L21 10 L21 14 L14 14 L14 21 L10 21 L10 14 L3 14 L3 10 L10 10 Z"></path></symbol>
+<symbol id="i-hexagon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3 L16 3 L20.5 12 L16 21 L8 21 L3.5 12 Z"></path></symbol>
+</defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/">
+      <img src="../assets/orisod-icon-detailed.png" alt="" width="28" height="28">
+      <span class="brand-text">
+        <span class="brand-name">ORISOD</span>
+        <span class="brand-badge">Games</span>
+      </span>
+    </a>
+    <a class="back-pill" href="/">
+      <svg viewBox="0 0 24 24"><use href="#i-arrow-left"></use></svg>
+      <span>Back to lobby</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <h1>Memory Match</h1>
+    <p class="intro">Flip two tiles at a time and find every matching pair. Your move count and best score are tracked right here in your browser.</p>
+
+    <div class="game-panel">
+      <div class="hud" role="group" aria-label="Game status">
+        <div class="hud-stat">
+          <span class="hud-label">Moves</span>
+          <span class="hud-value" id="movesValue">0</span>
+        </div>
+        <div class="hud-stat" id="bestStat" hidden>
+          <span class="hud-label">Best</span>
+          <span class="hud-value" id="bestValue">&mdash;</span>
+        </div>
+        <div class="hud-actions">
+          <button type="button" class="icon-btn icon-only" id="soundToggle" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><use id="soundIconUse" href="#i-sound-off"></use></svg>
+            <span class="visually-hidden" id="soundToggleLabel">Enable sound</span>
+          </button>
+          <button type="button" class="icon-btn" id="newGameBtn">
+            <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            New game
+          </button>
+        </div>
+      </div>
+
+      <div class="board" id="board" role="group" aria-label="Memory match board, 16 tiles"></div>
+
+      <div class="win-panel" id="winPanel" hidden tabindex="-1">
+        <h2>Solved!</h2>
+        <p id="winSummary"></p>
+        <button type="button" class="primary-btn" id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+
+    <div id="liveRegion" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="seo-content">
+      <h2>How to play Memory Match</h2>
+      <p>Memory Match is the classic concentration game: a grid of 16 face-down tiles hides 8 pairs of matching symbols. Flip two tiles at a time. If they match, they stay face up. If they don't, they flip back after a moment so you can try again. Clear the whole board using as few moves as possible.</p>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-item">
+        <div class="q">Is my progress or score uploaded anywhere?</div>
+        <p>No. Memory Match runs entirely in your browser. Your move count and best score are stored only in your browser's local storage, and nothing is sent to a server.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">Does the game save my best score?</div>
+        <p>Yes, if your browser allows local storage, your fewest moves in this browser are saved automatically so you can try to beat them next round. If local storage is blocked, the game still works, it just will not remember your best score.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">Can I play Memory Match with a keyboard only?</div>
+        <p>Yes. Tab moves between tiles and Enter or Space flips the focused tile. A visible focus outline shows which tile is selected at every step.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">Is there a time limit?</div>
+        <p>No. Memory Match tracks how long you take and how many moves you use, but there is no countdown and no penalty for taking your time.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  var STORAGE_KEY = 'orisod-games:memory-match:v1';
+
+  var SYMBOLS = [
+    { id:'star', name:'star' },
+    { id:'heart', name:'heart' },
+    { id:'circle', name:'circle' },
+    { id:'triangle', name:'triangle' },
+    { id:'square', name:'square' },
+    { id:'diamond', name:'diamond' },
+    { id:'cross', name:'cross' },
+    { id:'hexagon', name:'hexagon' }
+  ];
+
+  function plural(n, one, many){ return n === 1 ? one : many; }
+
+  var STR = {
+    tileHidden: function(n){ return 'Tile ' + n + ', hidden'; },
+    tileShowing: function(n, name){ return 'Tile ' + n + ', ' + name + ', showing'; },
+    tileMatched: function(n, name){ return 'Tile ' + n + ', ' + name + ', matched'; },
+    enableSound: 'Enable sound',
+    muteSound: 'Mute sound',
+    matchFound: 'Match found.',
+    noMatch: 'No match, try again.',
+    movesAnnounce: function(n){ return 'Move ' + n + '.'; },
+    solvedAnnounce: function(moves){ return 'Solved in ' + moves + ' ' + plural(moves, 'move', 'moves') + '.'; },
+    winSummary: function(moves, seconds, bestMoves, isNewBest){
+      var s = 'You solved it in ' + moves + ' ' + plural(moves, 'move', 'moves');
+      if (seconds !== null) {
+        s += ' and ' + seconds + ' ' + plural(seconds, 'second', 'seconds');
+      }
+      s += '.';
+      if (isNewBest) {
+        s += ' New best score.';
+      } else if (bestMoves !== null) {
+        s += ' Best: ' + bestMoves + ' ' + plural(bestMoves, 'move', 'moves') + '.';
+      }
+      return s;
+    }
+  };
+
+  var Storage = (function(){
+    var memory = { soundEnabled: false, bestMoves: null };
+    var available = false;
+    try {
+      var t = '__orisod_test__';
+      window.localStorage.setItem(t, '1');
+      window.localStorage.removeItem(t);
+      available = true;
+    } catch (e) { available = false; }
+
+    function load(){
+      if (!available) return memory;
+      try {
+        var raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return memory;
+        var parsed = JSON.parse(raw);
+        return {
+          soundEnabled: !!parsed.soundEnabled,
+          bestMoves: (typeof parsed.bestMoves === 'number' && parsed.bestMoves > 0) ? parsed.bestMoves : null
+        };
+      } catch (e) { return memory; }
+    }
+    function save(next){
+      memory = next;
+      if (!available) return;
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* denied mid-session */ }
+    }
+    return { load: load, save: save };
+  })();
+
+  var GameAudio = (function(){
+    var ctx = null;
+    function ensure(){
+      if (ctx) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      return ctx;
+    }
+    function tone(freq, dur, type, peak, delay){
+      window.setTimeout(function(){
+        var c = ensure();
+        if (!c) return;
+        if (c.state === 'suspended') c.resume();
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, c.currentTime);
+        gain.gain.linearRampToValueAtTime(peak, c.currentTime + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+        osc.connect(gain).connect(c.destination);
+        osc.start();
+        osc.stop(c.currentTime + dur + 0.03);
+      }, delay || 0);
+    }
+    return {
+      flip: function(){ tone(420, 0.09, 'sine', 0.10, 0); },
+      match: function(){ tone(660, 0.10, 'sine', 0.12, 0); tone(880, 0.14, 'sine', 0.12, 100); },
+      mismatch: function(){ tone(160, 0.18, 'sawtooth', 0.08, 0); },
+      solved: function(){ tone(523, 0.12, 'sine', 0.13, 0); tone(659, 0.12, 'sine', 0.13, 130); tone(784, 0.20, 'sine', 0.13, 260); }
+    };
+  })();
+
+  var state = Storage.load();
+
+  var boardEl = document.getElementById('board');
+  var movesValueEl = document.getElementById('movesValue');
+  var bestStatEl = document.getElementById('bestStat');
+  var bestValueEl = document.getElementById('bestValue');
+  var soundToggleBtn = document.getElementById('soundToggle');
+  var soundIconUse = document.getElementById('soundIconUse');
+  var soundToggleLabel = document.getElementById('soundToggleLabel');
+  var newGameBtn = document.getElementById('newGameBtn');
+  var winPanel = document.getElementById('winPanel');
+  var winSummaryEl = document.getElementById('winSummary');
+  var playAgainBtn = document.getElementById('playAgainBtn');
+  var liveRegion = document.getElementById('liveRegion');
+
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  var tiles = [];
+  var firstPick = null;
+  var secondPick = null;
+  var busy = false;
+  var moveCount = 0;
+  var matchedPairs = 0;
+  var startTime = null;
+
+  function announce(msg){
+    liveRegion.textContent = '';
+    window.setTimeout(function(){ liveRegion.textContent = msg; }, 30);
+  }
+
+  function updateSoundUI(){
+    soundToggleBtn.setAttribute('aria-pressed', state.soundEnabled ? 'true' : 'false');
+    soundIconUse.setAttribute('href', state.soundEnabled ? '#i-sound-on' : '#i-sound-off');
+    var label = state.soundEnabled ? STR.muteSound : STR.enableSound;
+    soundToggleLabel.textContent = label;
+    soundToggleBtn.title = label;
+  }
+
+  function updateBestUI(){
+    if (state.bestMoves) {
+      bestStatEl.hidden = false;
+      bestValueEl.textContent = String(state.bestMoves);
+    } else {
+      bestStatEl.hidden = true;
+    }
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = '';
+    tiles = [];
+
+    var deck = [];
+    SYMBOLS.forEach(function(sym, i){ deck.push(i); deck.push(i); });
+    for (var i = deck.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+    }
+
+    deck.forEach(function(symbolIndex, idx){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tile';
+      btn.setAttribute('aria-label', STR.tileHidden(idx + 1));
+
+      var inner = document.createElement('span');
+      inner.className = 'tile-inner';
+
+      var back = document.createElement('span');
+      back.className = 'tile-face tile-back';
+      back.setAttribute('aria-hidden', 'true');
+      back.innerHTML = '<svg class="tile-icon" viewBox="0 0 24 24"><use href="#i-back"></use></svg>';
+
+      var front = document.createElement('span');
+      front.className = 'tile-face tile-front sym-' + (symbolIndex % 4);
+      front.setAttribute('aria-hidden', 'true');
+      front.innerHTML =
+        '<svg class="tile-icon" viewBox="0 0 24 24"><use href="#i-' + SYMBOLS[symbolIndex].id + '"></use></svg>' +
+        '<span class="tile-mark tile-check" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-check"></use></svg></span>' +
+        '<span class="tile-mark tile-cross" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-x"></use></svg></span>';
+
+      inner.appendChild(back);
+      inner.appendChild(front);
+      btn.appendChild(inner);
+
+      (function(tileIndex){
+        btn.addEventListener('click', function(){ handlePick(tileIndex); });
+      })(idx);
+
+      boardEl.appendChild(btn);
+      tiles.push({ el: btn, symbolIndex: symbolIndex, matched: false, flipped: false });
+    });
+  }
+
+  function resetGame(){
+    firstPick = null;
+    secondPick = null;
+    busy = false;
+    moveCount = 0;
+    matchedPairs = 0;
+    startTime = null;
+    movesValueEl.textContent = '0';
+    winPanel.hidden = true;
+    buildBoard();
+  }
+
+  function handlePick(idx){
+    if (busy) return;
+    var tile = tiles[idx];
+    if (tile.matched || tile.flipped) return;
+    if (startTime === null) startTime = performance.now();
+
+    tile.flipped = true;
+    tile.el.classList.add('flipped');
+    tile.el.setAttribute('aria-label', STR.tileShowing(idx + 1, SYMBOLS[tile.symbolIndex].name));
+    if (state.soundEnabled) GameAudio.flip();
+
+    if (firstPick === null) {
+      firstPick = idx;
+      return;
+    }
+
+    secondPick = idx;
+    moveCount++;
+    movesValueEl.textContent = String(moveCount);
+    busy = true;
+
+    var a = tiles[firstPick];
+    var b = tiles[secondPick];
+    var aIndex = firstPick;
+    var bIndex = secondPick;
+
+    if (a.symbolIndex === b.symbolIndex) {
+      a.matched = true; b.matched = true;
+      a.el.classList.add('matched'); b.el.classList.add('matched');
+      a.el.disabled = true; b.el.disabled = true;
+      a.el.setAttribute('aria-label', STR.tileMatched(aIndex + 1, SYMBOLS[a.symbolIndex].name));
+      b.el.setAttribute('aria-label', STR.tileMatched(bIndex + 1, SYMBOLS[b.symbolIndex].name));
+      matchedPairs++;
+      if (state.soundEnabled) GameAudio.match();
+      announce(STR.movesAnnounce(moveCount) + ' ' + STR.matchFound);
+      firstPick = null; secondPick = null; busy = false;
+
+      if (matchedPairs === SYMBOLS.length) {
+        finishGame();
+      }
+    } else {
+      a.el.classList.add('mismatch'); b.el.classList.add('mismatch');
+      if (state.soundEnabled) GameAudio.mismatch();
+      announce(STR.movesAnnounce(moveCount) + ' ' + STR.noMatch);
+      window.setTimeout(function(){
+        a.flipped = false; b.flipped = false;
+        a.el.classList.remove('flipped', 'mismatch');
+        b.el.classList.remove('flipped', 'mismatch');
+        a.el.setAttribute('aria-label', STR.tileHidden(aIndex + 1));
+        b.el.setAttribute('aria-label', STR.tileHidden(bIndex + 1));
+        firstPick = null; secondPick = null; busy = false;
+      }, reduceMotion ? 500 : 900);
+    }
+  }
+
+  function finishGame(){
+    var elapsedSeconds = startTime !== null ? Math.round((performance.now() - startTime) / 1000) : null;
+    var previousBest = state.bestMoves;
+    var isNewBest = previousBest === null || moveCount < previousBest;
+    if (isNewBest) {
+      state = { soundEnabled: state.soundEnabled, bestMoves: moveCount };
+      Storage.save(state);
+    }
+    updateBestUI();
+    winSummaryEl.textContent = STR.winSummary(moveCount, elapsedSeconds, previousBest, isNewBest);
+    winPanel.hidden = false;
+    winPanel.focus();
+    if (state.soundEnabled) GameAudio.solved();
+    announce(STR.solvedAnnounce(moveCount));
+  }
+
+  soundToggleBtn.addEventListener('click', function(){
+    state = { soundEnabled: !state.soundEnabled, bestMoves: state.bestMoves };
+    Storage.save(state);
+    updateSoundUI();
+  });
+
+  newGameBtn.addEventListener('click', function(){ resetGame(); });
+  playAgainBtn.addEventListener('click', function(){ resetGame(); });
+
+  updateSoundUI();
+  updateBestUI();
+  resetGame();
+})();
+</script>
+
+</body>
+</html>

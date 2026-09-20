@@ -175,7 +175,7 @@ main{padding-block:24px 56px;}
 .game-card{
   flex:0 0 220px;scroll-snap-align:start;display:flex;flex-direction:column;
   border-radius:16px;background:var(--s1);border:1px solid var(--border);overflow:hidden;
-  cursor:pointer;font:inherit;color:inherit;text-align:left;padding:0;
+  cursor:pointer;font:inherit;color:inherit;text-align:left;text-decoration:none;padding:0;
   transition:border-color .18s,transform .18s,box-shadow .18s;
 }
 .game-card:hover{transform:translateY(-3px);border-color:rgba(37,99,235,.5);box-shadow:0 10px 28px rgba(0,0,0,.35);}
@@ -353,7 +353,7 @@ main{padding-block:24px 56px;}
         </div>
       </button>
 
-      <button type="button" class="game-card" data-cat="Logic" data-title="Memorama">
+      <a class="game-card" href="/es/memory-match/" data-cat="Logic" data-title="Memorama">
         <div class="card-thumb">
           <picture>
             <source srcset="../assets/games-art/memory-match-card.avif" type="image/avif">
@@ -368,7 +368,7 @@ main{padding-block:24px 56px;}
             <span class="badge badge-mode">Individual</span>
           </div>
         </div>
-      </button>
+      </a>
 
       <button type="button" class="game-card" data-cat="Words" data-title="Sopa de Letras Personalizada">
         <div class="card-thumb">
@@ -467,6 +467,7 @@ main{padding-block:24px 56px;}
   }
 
   cards.forEach(function(card){
+    if (card.hasAttribute('href')) return;
     card.addEventListener('click', function(){
       showToast(card.getAttribute('data-title') + ' estará disponible pronto');
     });
