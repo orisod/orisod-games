@@ -222,11 +222,19 @@ h1{font-size:26px;margin-bottom:8px;}
 .board{
   display:grid;grid-template-columns:repeat(var(--cols, 4), minmax(44px, 1fr));
   gap:var(--tile-gap, 10px);width:100%;
-  max-width:calc(var(--cols, 4) * 100px + (var(--cols, 4) - 1) * var(--tile-gap, 10px));
-  margin:0 auto;
-  background:linear-gradient(180deg, #1a0f22 0%, #0d0714 100%);
-  border:1.5px solid rgba(236,72,153,.3);border-radius:18px;
-  box-shadow:inset 0 2px 8px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+  --board-pad:14px;
+  max-width:calc(var(--cols, 4) * 100px + (var(--cols, 4) - 1) * var(--tile-gap, 10px) + 2 * var(--board-pad));
+  margin:0 auto;padding:var(--board-pad);
+  /* Darker, textured tray (corner glow + faint grid, same recipe as .game-panel) so the tiles read as raised above it, like the card art */
+  background-color:#06040b;
+  background-image:
+    radial-gradient(circle at 100% 0%, rgba(236,72,153,.16) 0%, transparent 45%),
+    radial-gradient(circle at 0% 100%, rgba(124,92,255,.10) 0%, transparent 50%),
+    linear-gradient(rgba(236,72,153,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236,72,153,.07) 1px, transparent 1px);
+  background-size:auto, auto, 22px 22px, 22px 22px;
+  border:1.5px solid rgba(236,72,153,.35);border-radius:18px;
+  box-shadow:inset 0 3px 14px rgba(0,0,0,.75), 0 10px 28px rgba(0,0,0,.45);
 }
 .tile{
   position:relative;aspect-ratio:1/1;min-width:44px;min-height:44px;
@@ -242,19 +250,28 @@ h1{font-size:26px;margin-bottom:8px;}
 .tile-face{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   backface-visibility:hidden;border-radius:14px;
-  box-shadow:0 3px 6px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.07), inset 0 -3px 6px rgba(0,0,0,.25);
+  box-shadow:0 6px 12px rgba(0,0,0,.6), 0 2px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -3px 6px rgba(0,0,0,.25);
 }
+/* Face-down: muted magenta with a faint diamond lattice and the card art's nested-diamond mark (visual only; face-down/up state is in each tile's aria-label) */
 .tile-back{
-  background:linear-gradient(160deg, #3a1530 0%, #230d1c 100%);
-  border:1px solid rgba(236,72,153,.2);color:var(--pink-300);
+  background-color:#5e1a44;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(249,168,212,.1) 0 1.5px, transparent 1.5px 11px),
+    repeating-linear-gradient(-45deg, rgba(249,168,212,.1) 0 1.5px, transparent 1.5px 11px),
+    linear-gradient(160deg, #7a2458 0%, #4c1236 100%);
+  border:1px solid rgba(244,114,182,.45);color:var(--pink-300);
 }
-.tile-back .tile-icon{width:20px;height:20px;opacity:.65;}
+.tile-back .tile-icon{width:46%;height:46%;opacity:.5;}
 .tile:hover:not(:disabled) .tile-back{
-  background:linear-gradient(160deg, #4a1c3d 0%, #2c0f24 100%);
-  border-color:rgba(236,72,153,.5);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(249,168,212,.14) 0 1.5px, transparent 1.5px 11px),
+    repeating-linear-gradient(-45deg, rgba(249,168,212,.14) 0 1.5px, transparent 1.5px 11px),
+    linear-gradient(160deg, #8a2a64 0%, #57153e 100%);
+  border-color:rgba(249,168,212,.7);
 }
 .tile-front{
-  background:linear-gradient(160deg, var(--pink-600) 0%, var(--pink-900) 100%);
+  /* Softer rose than the old pink-600 to pink-900, same hue family, easier on the eyes over a long game */
+  background:linear-gradient(160deg, #d488ae 0%, #9a4a74 100%);
   border:1px solid rgba(249,168,212,.35);transform:rotateY(180deg);
 }
 .tile-front .tile-icon{
@@ -318,6 +335,13 @@ h1{font-size:26px;margin-bottom:8px;}
 @media (max-width:420px){
   .wrap{padding-inline:16px;}
   .game-panel{padding:16px;}
+  .board{--board-pad:6px;}
+}
+/* Expert (6 cols x 44px touch targets + 8px gaps = 304px) needs every spare pixel on 360px phones */
+@media (max-width:380px){
+  .wrap{padding-inline:12px;}
+  .game-panel{padding:10px;}
+  .board{--board-pad:4px;}
 }
 
 @media (min-width:700px){
@@ -341,7 +365,7 @@ h1{font-size:26px;margin-bottom:8px;}
 <symbol id="i-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><line x1="16" y1="9" x2="22" y2="15"></line><line x1="22" y1="9" x2="16" y2="15"></line></symbol>
 <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></symbol>
 <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
-<symbol id="i-back" viewBox="0 0 24 24"><text x="12" y="17.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="currentColor">?</text></symbol>
+<symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5 L21.5 12 L12 21.5 L2.5 12 Z"></path><path d="M12 8.5 L15.5 12 L12 15.5 L8.5 12 Z" fill="currentColor" stroke="none"></path></symbol>
 <symbol id="i-star" viewBox="0 0 24 24" fill="url(#iconGradient)" stroke="#4a0e2e" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"><path d="M12 3 L14.6 8.7 L20.8 9.3 L16.1 13.5 L17.5 19.6 L12 16.4 L6.5 19.6 L7.9 13.5 L3.2 9.3 L9.4 8.7 Z"></path></symbol>
 <symbol id="i-heart" viewBox="0 0 24 24" fill="url(#iconGradient)" stroke="#4a0e2e" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"><path d="M12 21 C12 21 4.8 16.6 2.4 11.9 C0.7 8.4 3 4.8 6.8 4.8 C8.8 4.8 10.4 5.8 12 7.8 C13.6 5.8 15.2 4.8 17.2 4.8 C21 4.8 23.3 8.4 21.6 11.9 C19.2 16.6 12 21 12 21 Z"></path></symbol>
 <symbol id="i-circle" viewBox="0 0 24 24" fill="url(#iconGradient)" stroke="#4a0e2e" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="12" r="8"></circle></symbol>
