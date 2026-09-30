@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2GMNDCVMK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-V2GMNDCVMK");
+</script>
+<title>Sudoku – Free browser game | Orisod Games</title>
+<meta name="description" content="Play Sudoku free in your browser. Every puzzle has exactly one solution, with conflict hints and your best time saved on your device. No downloads and no accounts, ever.">
+<link rel="canonical" href="https://games.orisod.com/sudoku/">
+<link rel="alternate" hreflang="en" href="https://games.orisod.com/sudoku/">
+<link rel="alternate" hreflang="es" href="https://games.orisod.com/es/sudoku/">
+<link rel="alternate" hreflang="x-default" href="https://games.orisod.com/sudoku/">
+<link rel="icon" href="../assets/favicon-32x32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16x16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.ico">
+<meta name="theme-color" content="#0b0e15">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Sudoku",
+      "description": "Play Sudoku free in your browser. Every puzzle has exactly one solution, with conflict hints and your best time saved on your device. No downloads and no accounts, ever.",
+      "url": "https://games.orisod.com/sudoku/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any (runs in browser)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "isAccessibleForFree": true
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does every puzzle have exactly one solution?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Each puzzle is generated in your browser and checked by a solver before you see it. A clue is only removed if the grid still has exactly one solution, so you never need to guess."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my progress or time uploaded anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Sudoku runs entirely in your browser. Your best time and sound setting are stored only in your browser's local storage, and nothing is sent to a server."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I play Sudoku with a keyboard only?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Tab moves into the grid, the arrow keys move between cells, the number keys 1 to 9 fill the selected cell, and Backspace or Delete clears it. A visible outline shows the selected cell at every step."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if I enter a wrong number?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If a number clashes with the same number in its row, column, or 3x3 box, every cell involved is marked with a warning icon and a wavy underline. You can keep playing and fix it whenever you like."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+@font-face{
+  font-family:'Inter';
+  src:url('../assets/fonts/Inter-Variable.woff2') format('woff2-variations'),
+      url('../assets/fonts/Inter-Variable.woff2') format('woff2');
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Plus Jakarta Sans';
+  src:url('../assets/fonts/PlusJakartaSans-Variable.woff2') format('woff2-variations'),
+      url('../assets/fonts/PlusJakartaSans-Variable.woff2') format('woff2');
+  font-weight:200 800;
+  font-style:normal;
+  font-display:swap;
+}
+:root{
+  --s0:#0b0e15; --s1:#12151d; --s2:#191c26; --s3:#22262f; --s4:#2b2e38; --s5:#32353d;
+  --primary:#2563eb; --primary-light:#b4c5ff;
+  --violet:#7c5cff; --violet-light:#cabdff;
+  --text:#f1f5f9; --text-muted:#93a0b4;
+  --border:#262b36; --border-soft:#1c2029;
+  --amber:#f59e0b; --amber-light:#fcd9a8;
+  --secondary-light:#7bd0ff;
+  --danger:#f87171; --success:#4ade80;
+  --amber-200:#fde68a; --amber-300:#fcd34d; --amber-400:#fbbf24; --amber-500:#f59e0b;
+  --amber-600:#d97706; --amber-700:#b45309; --amber-800:#92400e; --amber-900:#78350f;
+  /* board palette sampled from the Sudoku card art (assets/games-art/sudoku-card.png) */
+  --cell-top:#fde58a; --cell-bottom:#f8cf5e;
+  --line-thin:#9d530c; --line-thick:#6a2e02;
+  --ink-given:#2b2418; --ink-entry:#1e40af; --ink-conflict:#991b1b;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--s0);}
+body{
+  min-height:100vh;
+  font-family:'Inter',Arial,Helvetica,sans-serif;
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(37,99,235,.12) 0%, transparent 40%),
+    radial-gradient(circle at 88% 18%, rgba(124,92,255,.12) 0%, transparent 44%),
+    radial-gradient(circle at 50% 95%, rgba(37,99,235,.08) 0%, transparent 50%);
+}
+h1,h2{font-family:'Plus Jakarta Sans',Arial,Helvetica,sans-serif;margin:0;}
+img{max-width:100%;display:block;}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+
+.wrap{max-width:760px;margin:0 auto;padding-inline:20px;}
+
+/* header (shared with Memory Match) */
+.site-header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,14,21,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.header-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-block:12px;
+}
+.brand{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none;color:inherit;}
+.brand img{height:28px;width:28px;border-radius:7px;}
+.brand-text{display:flex;align-items:center;gap:6px;}
+.brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;letter-spacing:.03em;color:#fff;}
+.brand-badge{
+  padding:2px 7px;border-radius:4px;background:rgba(37,99,235,.22);border:1px solid rgba(37,99,235,.55);
+  color:var(--secondary-light);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+}
+.back-pill{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;
+  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
+  text-decoration:none;font-size:12px;transition:border-color .15s,color .15s;flex-shrink:0;
+}
+.back-pill:hover{border-color:rgba(37,99,235,.5);color:var(--primary-light);}
+.back-pill:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;}
+.back-pill svg{width:12px;height:12px;transition:transform .15s;}
+.back-pill:hover svg{transform:translateX(-2px);}
+
+main{padding-block:28px 40px;}
+
+h1{font-size:26px;margin-bottom:10px;}
+.intro{font-size:14.5px;color:var(--text-muted);line-height:1.6;margin:0 0 24px 0;max-width:560px;}
+
+/* difficulty + mode badges (same as the lobby cards) */
+.game-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 12px 0;}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;border:1px solid;}
+.badge .diff-dot{width:6px;height:6px;border-radius:50%;}
+.badge-diff-med{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32);color:var(--amber-light);}
+.badge-diff-med .diff-dot{background:var(--amber);}
+.badge-mode{background:var(--s3);border-color:var(--border);color:var(--text-muted);}
+
+/* game panel: same texture recipe as Memory Match, amber accent */
+.game-panel{
+  position:relative;overflow:hidden;
+  background-image:
+    radial-gradient(circle at 90% 8%, rgba(245,158,11,.16) 0%, transparent 42%),
+    radial-gradient(circle at 6% 96%, rgba(37,99,235,.14) 0%, transparent 48%),
+    linear-gradient(160deg, #11182b 0%, #080d1a 100%);
+  border:1px solid var(--border);border-radius:20px;
+  padding:20px;
+}
+.game-panel::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(245,158,11,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,158,11,.05) 1px, transparent 1px);
+  background-size:34px 34px;
+}
+.game-panel > *{position:relative;z-index:1;}
+
+.hud{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
+.hud-stat{display:flex;flex-direction:column;gap:2px;min-width:56px;}
+.hud-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);}
+.hud-value{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:#fff;font-variant-numeric:tabular-nums;}
+#bestValue{color:var(--amber-300);}
+.hud-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+
+.icon-btn{
+  min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:0 16px;border-radius:999px;background:var(--s2);border:1px solid var(--border);color:var(--text);
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;
+  transition:border-color .15s,color .15s;
+}
+.icon-btn:hover{border-color:rgba(245,158,11,.55);color:#fff;}
+.icon-btn:focus-visible{outline:3px solid var(--amber-300);outline-offset:2px;}
+.icon-btn.icon-only{padding:0;width:44px;}
+.icon-btn .icon{width:18px;height:18px;flex-shrink:0;}
+
+/* board: raised amber tray with a beveled frame and glow, like the card */
+.board-area{max-width:540px;margin:0 auto;}
+.board-frame{
+  padding:10px;border-radius:16px;
+  background:linear-gradient(180deg, #fde68a 0%, #f9c440 38%, #e9a114 72%, #c47a0a 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.6),
+    inset 0 -4px 0 rgba(120,53,15,.55),
+    inset 2px 0 0 rgba(255,240,200,.35),
+    inset -2px 0 0 rgba(146,64,14,.35),
+    0 0 0 1px rgba(120,53,15,.7),
+    0 5px 0 #b45309,
+    0 6px 0 1px rgba(120,53,15,.8),
+    0 0 26px rgba(245,158,11,.5),
+    0 0 64px rgba(245,158,11,.2),
+    0 18px 32px rgba(0,0,0,.55);
+}
+.board{
+  display:flex;flex-direction:column;
+  border:3px solid var(--line-thick);border-radius:6px;
+  background:var(--cell-bottom);
+  box-shadow:inset 0 2px 5px rgba(120,53,15,.35);
+}
+.board:focus-visible{outline:none;}
+.board-row{display:grid;grid-template-columns:repeat(9, minmax(0, 1fr));}
+.board-row + .board-row{border-top:1px solid var(--line-thin);}
+.board-row.box-top{border-top:3px solid var(--line-thick);}
+.cell{
+  position:relative;aspect-ratio:1/1;min-width:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg, var(--cell-top) 0%, var(--cell-bottom) 100%);
+  font-family:'Plus Jakarta Sans',Arial,Helvetica,sans-serif;
+  font-size:clamp(17px, 5.4vw, 28px);line-height:1;
+  color:var(--ink-entry);font-weight:600;
+  cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  outline:none;
+}
+.cell + .cell{border-left:1px solid var(--line-thin);}
+.cell.box-left{border-left:3px solid var(--line-thick);}
+.cell.given{color:var(--ink-given);font-weight:800;cursor:default;}
+@media (hover:hover){.cell:hover:not(.selected){background:linear-gradient(180deg, #fee9a0 0%, #f9d470 100%);}}
+/* selected: brighter amber with a glow, like the highlighted letters on the word-search card */
+.cell.selected{
+  z-index:2;
+  background:linear-gradient(180deg, #fcd34d 0%, #fbbf24 100%);
+  box-shadow:inset 0 0 0 2px var(--amber-900), 0 0 0 2px #fff4cc, 0 0 16px 6px rgba(255,214,102,.95);
+}
+.cell.selected:focus-visible{box-shadow:inset 0 0 0 2px var(--amber-900), inset 0 0 0 4px #fff4cc, 0 0 0 2px #fff4cc, 0 0 16px 6px rgba(255,214,102,.95);}
+.cell-value{position:relative;}
+/* conflict: colour + wavy underline + corner warning icon, never colour alone.
+   Text contrast (entry #1e40af, conflict #991b1b, given #2b2418) is at least 4.98:1 on every cell fill, selected included. */
+.cell.conflict .cell-value{
+  color:var(--ink-conflict);
+  text-decoration:underline wavy var(--ink-conflict);
+  text-decoration-thickness:2px;text-underline-offset:3px;
+}
+.cell-flag{
+  position:absolute;top:1px;right:1px;width:clamp(10px, 2.6vw, 13px);height:clamp(10px, 2.6vw, 13px);border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+  background:var(--ink-conflict);color:#fff;
+  font-family:Arial,Helvetica,sans-serif;font-size:clamp(7px, 2vw, 10px);font-weight:700;line-height:1;
+  box-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+.cell.conflict .cell-flag{display:flex;}
+.cell.shake .cell-value{animation:cellShake .28s ease-in-out 2;}
+@keyframes cellShake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-3px);}
+  75%{transform:translateX(3px);}
+}
+.board.solved .cell{cursor:default;}
+
+.board-help{font-size:12.5px;color:var(--text-muted);line-height:1.5;text-align:center;margin:14px auto 0;max-width:460px;}
+
+/* number pad */
+.numpad{display:grid;grid-template-columns:repeat(5, minmax(44px, 1fr));gap:8px;margin:16px auto 0;}
+.num-btn{
+  min-height:48px;border-radius:12px;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:var(--ink-given);
+  background:linear-gradient(180deg, #fde68a 0%, #f5b623 100%);
+  border:1px solid rgba(120,53,15,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 0 rgba(120,53,15,.35), 0 3px 6px rgba(0,0,0,.45);
+  transition:filter .15s, transform .1s;
+}
+.num-btn:hover{filter:brightness(1.06);}
+.num-btn:active{transform:translateY(1px);}
+.num-btn:focus-visible{outline:3px solid var(--amber-300);outline-offset:2px;}
+.num-btn.erase{
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 2px;
+  background:var(--s2);color:var(--text);border-color:var(--border);font-size:11px;font-weight:700;
+  box-shadow:0 3px 6px rgba(0,0,0,.35);
+}
+.num-btn.erase:hover{border-color:rgba(245,158,11,.55);filter:none;}
+.num-btn.erase svg{width:18px;height:18px;flex-shrink:0;}
+.num-btn:disabled{opacity:.45;cursor:default;filter:none;transform:none;}
+
+@media (prefers-reduced-motion: reduce){
+  .cell.shake .cell-value{animation:none;}
+  .num-btn{transition:none;}
+}
+
+.win-panel{
+  margin-top:20px;padding:22px;border-radius:16px;background:var(--s2);
+  border:1px solid rgba(74,222,128,.4);text-align:center;
+}
+.win-panel:focus-visible,.win-panel:focus{outline:3px solid var(--amber-300);outline-offset:3px;}
+.win-panel h2{font-size:19px;margin-bottom:8px;color:#fff;}
+.win-panel p{font-size:14px;color:var(--text-muted);margin:0 0 16px 0;line-height:1.5;}
+.primary-btn{
+  min-height:44px;padding:0 22px;border-radius:999px;
+  background:linear-gradient(160deg, var(--amber-400) 0%, var(--amber-600) 100%);color:#1c1204;
+  border:1px solid rgba(252,211,77,.6);font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;
+  font-size:14px;cursor:pointer;transition:filter .15s;
+}
+.primary-btn:hover{filter:brightness(1.08);}
+.primary-btn:focus-visible{outline:3px solid var(--amber-300);outline-offset:2px;}
+
+.seo-content{max-width:600px;margin:40px auto 0;}
+.seo-content h2{font-size:17px;margin-bottom:10px;margin-top:26px;}
+.seo-content h2:first-child{margin-top:0;}
+.seo-content p{font-size:14px;color:var(--text-muted);line-height:1.6;margin:0 0 8px 0;}
+.faq-item{margin-bottom:16px;}
+.faq-item .q{font-weight:700;color:#fff;margin-bottom:4px;font-size:14px;}
+.faq-item p{margin:0;}
+
+.site-footer{border-top:1px solid var(--border);margin-top:48px;}
+.site-footer p{font-size:12.5px;color:var(--text-muted);text-align:center;margin:0;padding-block:20px;}
+.site-footer a{color:var(--primary-light);text-decoration:underline;text-underline-offset:2px;}
+.site-footer a:hover{color:#fff;}
+.site-footer a:focus-visible{outline:3px solid var(--primary-light);outline-offset:2px;border-radius:2px;}
+
+@media (max-width:420px){
+  .wrap{padding-inline:16px;}
+  .game-panel{padding:14px;}
+  .board-frame{padding:7px;border-radius:13px;}
+  .numpad{gap:6px;}
+}
+@media (max-width:380px){
+  .wrap{padding-inline:12px;}
+  .game-panel{padding:10px;}
+  .board-frame{padding:6px;}
+}
+@media (min-width:700px){
+  h1{font-size:30px;}
+  .game-panel{padding:28px;}
+  .numpad{grid-template-columns:repeat(10, minmax(44px, 1fr));}
+}
+</style>
+</head>
+<body>
+
+<svg class="visually-hidden" aria-hidden="true">
+<defs>
+<symbol id="i-arrow-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"></path><polyline points="21 3 21 9 15 9"></polyline></symbol>
+<symbol id="i-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></symbol>
+<symbol id="i-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><line x1="16" y1="9" x2="22" y2="15"></line><line x1="22" y1="9" x2="16" y2="15"></line></symbol>
+<symbol id="i-erase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H9L4 15a2 2 0 0 1 0-2.8L13.2 3a2 2 0 0 1 2.8 0L21 8a2 2 0 0 1 0 2.8L12 20"></path><line x1="9" y1="10" x2="15" y2="16"></line></symbol>
+</defs>
+</svg>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="/">
+      <img src="../assets/orisod-icon-detailed.png" alt="" width="28" height="28">
+      <span class="brand-text">
+        <span class="brand-name">ORISOD</span>
+        <span class="brand-badge">Games</span>
+      </span>
+    </a>
+    <a class="back-pill" href="/">
+      <svg viewBox="0 0 24 24"><use href="#i-arrow-left"></use></svg>
+      <span>Back to lobby</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <h1>Sudoku</h1>
+    <div class="game-badges">
+      <span class="badge badge-diff-med"><span class="diff-dot" aria-hidden="true"></span>Medium</span>
+      <span class="badge badge-mode">Solo</span>
+    </div>
+    <p class="intro">Fill every row, column, and 3x3 box with the numbers 1 to 9. Every puzzle has exactly one solution, and your best time is saved right here in your browser.</p>
+
+    <div class="game-panel">
+      <div class="hud" role="group" aria-label="Game status">
+        <div class="hud-stat">
+          <span class="hud-label">Time</span>
+          <span class="hud-value" id="timeValue">0:00</span>
+        </div>
+        <div class="hud-stat" id="bestStat" hidden>
+          <span class="hud-label">Best</span>
+          <span class="hud-value" id="bestValue">&mdash;</span>
+        </div>
+        <div class="hud-actions">
+          <button type="button" class="icon-btn icon-only" id="soundToggle" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><use id="soundIconUse" href="#i-sound-off"></use></svg>
+            <span class="visually-hidden" id="soundToggleLabel">Enable sound</span>
+          </button>
+          <button type="button" class="icon-btn" id="newGameBtn">
+            <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            New game
+          </button>
+        </div>
+      </div>
+
+      <div class="board-area">
+        <div class="board-frame">
+          <div class="board" id="board" role="grid" aria-label="Sudoku grid, 9 by 9" aria-describedby="boardHelp"></div>
+        </div>
+        <p class="board-help" id="boardHelp">Select a cell, then type a number from 1 to 9 or use the number pad. Arrow keys move between cells, and Backspace or Erase clears a cell.</p>
+
+        <div class="numpad" role="group" aria-label="Number pad">
+          <button type="button" class="num-btn" data-digit="1">1</button>
+          <button type="button" class="num-btn" data-digit="2">2</button>
+          <button type="button" class="num-btn" data-digit="3">3</button>
+          <button type="button" class="num-btn" data-digit="4">4</button>
+          <button type="button" class="num-btn" data-digit="5">5</button>
+          <button type="button" class="num-btn" data-digit="6">6</button>
+          <button type="button" class="num-btn" data-digit="7">7</button>
+          <button type="button" class="num-btn" data-digit="8">8</button>
+          <button type="button" class="num-btn" data-digit="9">9</button>
+          <button type="button" class="num-btn erase" data-digit="0" aria-label="Erase">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-erase"></use></svg><span class="erase-label">Erase</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="win-panel" id="winPanel" hidden tabindex="-1">
+        <h2>Solved!</h2>
+        <p id="winSummary"></p>
+        <button type="button" class="primary-btn" id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+
+    <div id="liveRegion" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="seo-content">
+      <h2>How to play Sudoku</h2>
+      <p>Sudoku is a logic puzzle on a 9x9 grid split into nine 3x3 boxes. Some cells start with a number. Your goal is to fill every empty cell so that each row, each column, and each 3x3 box contains the numbers 1 to 9 exactly once. Numbers in dark bold type are part of the puzzle and cannot be changed. The numbers you add appear in blue, and you can change or clear them at any time.</p>
+
+      <h2>Frequently asked questions</h2>
+      <div class="faq-item">
+        <div class="q">Does every puzzle have exactly one solution?</div>
+        <p>Yes. Each puzzle is generated in your browser and checked by a solver before you see it. A clue is only removed if the grid still has exactly one solution, so you never need to guess.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">Is my progress or time uploaded anywhere?</div>
+        <p>No. Sudoku runs entirely in your browser. Your best time and sound setting are stored only in your browser's local storage, and nothing is sent to a server.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">Can I play Sudoku with a keyboard only?</div>
+        <p>Yes. Tab moves into the grid, the arrow keys move between cells, the number keys 1 to 9 fill the selected cell, and Backspace or Delete clears it. A visible outline shows the selected cell at every step.</p>
+      </div>
+      <div class="faq-item">
+        <div class="q">What happens if I enter a wrong number?</div>
+        <p>If a number clashes with the same number in its row, column, or 3x3 box, every cell involved is marked with a warning icon and a wavy underline. You can keep playing and fix it whenever you like.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Orisod Games is part of <a href="https://orisod.com">Orisod</a>, free browser tools for images and PDFs.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* sudoku-engine:start (pure logic, no DOM; tested by extracting this block) */
+  var SudokuEngine = (function(){
+    var ALL = 0x3FE; // bits 1..9
+    var ROW = [], COL = [], BOX = [], PEERS = [];
+    for (var i = 0; i < 81; i++) {
+      ROW[i] = Math.floor(i / 9);
+      COL[i] = i % 9;
+      BOX[i] = Math.floor(ROW[i] / 3) * 3 + Math.floor(COL[i] / 3);
+    }
+    for (var a = 0; a < 81; a++) {
+      PEERS[a] = [];
+      for (var b = 0; b < 81; b++) {
+        if (a !== b && (ROW[a] === ROW[b] || COL[a] === COL[b] || BOX[a] === BOX[b])) PEERS[a].push(b);
+      }
+    }
+
+    function bitCount(m){ var c = 0; while (m) { m &= m - 1; c++; } return c; }
+
+    function shuffle(arr, rnd){
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(rnd() * (i + 1));
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+      }
+      return arr;
+    }
+
+    // Backtracking search with "most constrained cell first". Stops once `limit`
+    // solutions are found; `onSolution` (optional) receives the first one.
+    function search(grid, limit, rnd, onSolution){
+      var g = grid.slice();
+      var rows = [0,0,0,0,0,0,0,0,0], cols = [0,0,0,0,0,0,0,0,0], boxes = [0,0,0,0,0,0,0,0,0];
+      for (var i = 0; i < 81; i++) {
+        var v = g[i];
+        if (!v) continue;
+        var bit = 1 << v;
+        if ((rows[ROW[i]] | cols[COL[i]] | boxes[BOX[i]]) & bit) return 0; // givens already clash
+        rows[ROW[i]] |= bit; cols[COL[i]] |= bit; boxes[BOX[i]] |= bit;
+      }
+      var count = 0;
+      function step(){
+        var best = -1, bestMask = 0, bestCount = 10;
+        for (var i = 0; i < 81; i++) {
+          if (g[i]) continue;
+          var mask = ALL & ~(rows[ROW[i]] | cols[COL[i]] | boxes[BOX[i]]);
+          var c = bitCount(mask);
+          if (c === 0) return;
+          if (c < bestCount) { best = i; bestMask = mask; bestCount = c; if (c === 1) break; }
+        }
+        if (best === -1) {
+          count++;
+          if (count === 1 && onSolution) onSolution(g.slice());
+          return;
+        }
+        var digits = [];
+        for (var d = 1; d <= 9; d++) if (bestMask & (1 << d)) digits.push(d);
+        if (rnd) shuffle(digits, rnd);
+        for (var k = 0; k < digits.length; k++) {
+          var dd = digits[k], bit = 1 << dd;
+          g[best] = dd;
+          rows[ROW[best]] |= bit; cols[COL[best]] |= bit; boxes[BOX[best]] |= bit;
+          step();
+          rows[ROW[best]] &= ~bit; cols[COL[best]] &= ~bit; boxes[BOX[best]] &= ~bit;
+          g[best] = 0;
+          if (count >= limit) return;
+        }
+      }
+      step();
+      return count;
+    }
+
+    function countSolutions(grid, limit){ return search(grid, limit || 2, null, null); }
+
+    function randomSolution(rnd){
+      var result = null;
+      var empty = [];
+      for (var i = 0; i < 81; i++) empty.push(0);
+      search(empty, 1, rnd, function(sol){ result = sol; });
+      return result;
+    }
+
+    // Remove clues one at a time in random order, keeping a removal only if the
+    // puzzle still has exactly one solution. Stops at `target` clues.
+    function carve(solution, target, rnd){
+      var puzzle = solution.slice();
+      var order = [];
+      for (var i = 0; i < 81; i++) order.push(i);
+      shuffle(order, rnd);
+      var clues = 81;
+      for (var k = 0; k < order.length && clues > target; k++) {
+        var idx = order[k], keep = puzzle[idx];
+        puzzle[idx] = 0;
+        if (countSolutions(puzzle, 2) === 1) clues--;
+        else puzzle[idx] = keep;
+      }
+      return { puzzle: puzzle, clues: clues };
+    }
+
+    function generate(minClues, maxClues, rnd){
+      rnd = rnd || Math.random;
+      var last = null;
+      for (var attempt = 0; attempt < 30; attempt++) {
+        var solution = randomSolution(rnd);
+        var target = minClues + Math.floor(rnd() * (maxClues - minClues + 1));
+        var res = carve(solution, target, rnd);
+        last = { puzzle: res.puzzle, solution: solution, clues: res.clues };
+        if (res.clues >= minClues && res.clues <= maxClues) return last;
+      }
+      return last;
+    }
+
+    return { generate: generate, countSolutions: countSolutions, ROW: ROW, COL: COL, BOX: BOX, PEERS: PEERS };
+  })();
+  /* sudoku-engine:end */
+
+  var STORAGE_KEY = 'orisod-games:sudoku:v1';
+  var SCHEMA_VERSION = 1;
+  // Base game ships one level (Medium). Clue range follows the common
+  // convention: Easy 36-46, Medium 32-35, Hard 28-31, Expert 22-27.
+  var LEVEL = { id:'medium', name:'Medium', minClues:32, maxClues:35 };
+
+  function plural(n, one, many){ return n === 1 ? one : many; }
+  function formatTime(total){
+    var m = Math.floor(total / 60), s = total % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function spokenTime(total){
+    var m = Math.floor(total / 60), s = total % 60;
+    var parts = [];
+    if (m) parts.push(m + ' ' + plural(m, 'minute', 'minutes'));
+    parts.push(s + ' ' + plural(s, 'second', 'seconds'));
+    return parts.join(' ');
+  }
+
+  var STR = {
+    cellLabel: function(r, c, value, given, conflict){
+      var s = 'Row ' + r + ', column ' + c + ', ';
+      if (!value) return s + 'empty';
+      s += value;
+      if (given) s += ', given';
+      if (conflict) s += ', conflict';
+      return s;
+    },
+    enableSound: 'Enable sound',
+    muteSound: 'Mute sound',
+    entered: function(d, r, c){ return d + ' in row ' + r + ', column ' + c + '.'; },
+    cleared: function(r, c){ return 'Row ' + r + ', column ' + c + ' cleared.'; },
+    givenCell: 'That number is part of the puzzle and cannot be changed.',
+    conflict: function(d, where){ return 'Conflict: ' + d + ' is already in this ' + where + '.'; },
+    whereRow: 'row', whereCol: 'column', whereBox: '3x3 box',
+    newPuzzle: 'New puzzle ready. Medium, ' + '%n clues.',
+    solvedAnnounce: function(t){ return 'Puzzle solved in ' + spokenTime(t) + '.'; },
+    winSummary: function(t, best, isNewBest){
+      var s = 'You solved it in ' + spokenTime(t) + '.';
+      if (isNewBest) s += ' New best time.';
+      else if (best !== null) s += ' Best: ' + formatTime(best) + '.';
+      return s;
+    }
+  };
+
+  function emptyBest(){ return { easy: null, medium: null, hard: null, expert: null }; }
+
+  function sanitizeState(parsed){
+    var best = emptyBest();
+    if (parsed && parsed.best && typeof parsed.best === 'object') {
+      Object.keys(best).forEach(function(k){
+        var v = parsed.best[k];
+        best[k] = (typeof v === 'number' && v > 0 && isFinite(v)) ? Math.round(v) : null;
+      });
+    }
+    return { v: SCHEMA_VERSION, soundEnabled: !!(parsed && parsed.soundEnabled), best: best };
+  }
+
+  // Future schema changes: bump SCHEMA_VERSION and add a step here that
+  // upgrades an older object (parsed.v < SCHEMA_VERSION) before sanitizing.
+  function migrate(parsed){
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed;
+  }
+
+  var Storage = (function(){
+    var memory = sanitizeState(null);
+    var available = false;
+    try {
+      var t = '__orisod_test__';
+      window.localStorage.setItem(t, '1');
+      window.localStorage.removeItem(t);
+      available = true;
+    } catch (e) { available = false; }
+
+    function load(){
+      if (!available) return memory;
+      try {
+        var raw = window.localStorage.getItem(STORAGE_KEY);
+        return sanitizeState(raw ? migrate(JSON.parse(raw)) : null);
+      } catch (e) { return memory; }
+    }
+    function save(next){
+      memory = next;
+      if (!available) return;
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* denied mid-session */ }
+    }
+    return { load: load, save: save };
+  })();
+
+  var GameAudio = (function(){
+    var ctx = null;
+    function ensure(){
+      if (ctx) return ctx;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      return ctx;
+    }
+    function tone(freq, dur, type, peak, delay){
+      window.setTimeout(function(){
+        var c = ensure();
+        if (!c) return;
+        if (c.state === 'suspended') c.resume();
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, c.currentTime);
+        gain.gain.linearRampToValueAtTime(peak, c.currentTime + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
+        osc.connect(gain).connect(c.destination);
+        osc.start();
+        osc.stop(c.currentTime + dur + 0.03);
+      }, delay || 0);
+    }
+    return {
+      place: function(){ tone(520, 0.07, 'sine', 0.09, 0); },
+      erase: function(){ tone(300, 0.07, 'sine', 0.07, 0); },
+      conflict: function(){ tone(160, 0.18, 'sawtooth', 0.07, 0); },
+      solved: function(){ tone(523, 0.12, 'sine', 0.13, 0); tone(659, 0.12, 'sine', 0.13, 130); tone(784, 0.22, 'sine', 0.13, 260); }
+    };
+  })();
+
+  var state = Storage.load();
+
+  var boardEl = document.getElementById('board');
+  var timeValueEl = document.getElementById('timeValue');
+  var bestStatEl = document.getElementById('bestStat');
+  var bestValueEl = document.getElementById('bestValue');
+  var soundToggleBtn = document.getElementById('soundToggle');
+  var soundIconUse = document.getElementById('soundIconUse');
+  var soundToggleLabel = document.getElementById('soundToggleLabel');
+  var newGameBtn = document.getElementById('newGameBtn');
+  var winPanel = document.getElementById('winPanel');
+  var winSummaryEl = document.getElementById('winSummary');
+  var playAgainBtn = document.getElementById('playAgainBtn');
+  var liveRegion = document.getElementById('liveRegion');
+  var numButtons = Array.prototype.slice.call(document.querySelectorAll('.num-btn'));
+
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  var cells = [];       // DOM elements, index 0..80
+  var values = [];      // current digits, 0 = empty
+  var given = [];       // true for puzzle clues
+  var solution = [];
+  var conflicts = [];   // true when the cell's digit clashes with a peer
+  var selected = 40;
+  var solved = false;
+  var startTime = null;
+  var timerId = null;
+
+  function announce(msg){
+    liveRegion.textContent = '';
+    window.setTimeout(function(){ liveRegion.textContent = msg; }, 30);
+  }
+
+  function elapsedSeconds(){
+    return startTime === null ? 0 : Math.floor((performance.now() - startTime) / 1000);
+  }
+  function tick(){ timeValueEl.textContent = formatTime(elapsedSeconds()); }
+  function startTimer(){
+    if (startTime !== null) return;
+    startTime = performance.now();
+    timerId = window.setInterval(tick, 1000);
+  }
+  function stopTimer(){
+    if (timerId !== null) { window.clearInterval(timerId); timerId = null; }
+  }
+
+  function updateSoundUI(){
+    soundToggleBtn.setAttribute('aria-pressed', state.soundEnabled ? 'true' : 'false');
+    soundIconUse.setAttribute('href', state.soundEnabled ? '#i-sound-on' : '#i-sound-off');
+    var label = state.soundEnabled ? STR.muteSound : STR.enableSound;
+    soundToggleLabel.textContent = label;
+    soundToggleBtn.title = label;
+  }
+
+  function updateBestUI(){
+    var best = state.best[LEVEL.id];
+    if (best) {
+      bestStatEl.hidden = false;
+      bestValueEl.textContent = formatTime(best);
+    } else {
+      bestStatEl.hidden = true;
+    }
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = '';
+    cells = [];
+    for (var r = 0; r < 9; r++) {
+      var row = document.createElement('div');
+      row.className = 'board-row' + (r === 3 || r === 6 ? ' box-top' : '');
+      row.setAttribute('role', 'row');
+      for (var c = 0; c < 9; c++) {
+        var idx = r * 9 + c;
+        var cell = document.createElement('div');
+        cell.className = 'cell' + (c === 3 || c === 6 ? ' box-left' : '');
+        cell.setAttribute('role', 'gridcell');
+        cell.tabIndex = -1;
+        cell.innerHTML = '<span class="cell-value" aria-hidden="true"></span><span class="cell-flag" aria-hidden="true">!</span>';
+        (function(i){
+          cell.addEventListener('click', function(){ select(i, true); });
+        })(idx);
+        row.appendChild(cell);
+        cells.push(cell);
+      }
+      boardEl.appendChild(row);
+    }
+  }
+
+  function computeConflicts(){
+    for (var i = 0; i < 81; i++) {
+      conflicts[i] = false;
+      if (!values[i]) continue;
+      var peers = SudokuEngine.PEERS[i];
+      for (var k = 0; k < peers.length; k++) {
+        if (values[peers[k]] === values[i]) { conflicts[i] = true; break; }
+      }
+    }
+  }
+
+  function renderCell(i){
+    var el = cells[i];
+    var r = SudokuEngine.ROW[i] + 1, c = SudokuEngine.COL[i] + 1;
+    el.querySelector('.cell-value').textContent = values[i] ? String(values[i]) : '';
+    el.classList.toggle('given', given[i]);
+    el.classList.toggle('conflict', conflicts[i]);
+    el.classList.toggle('selected', i === selected);
+    el.setAttribute('aria-selected', i === selected ? 'true' : 'false');
+    if (given[i] || solved) el.setAttribute('aria-readonly', 'true');
+    else el.removeAttribute('aria-readonly');
+    el.setAttribute('aria-label', STR.cellLabel(r, c, values[i], given[i], conflicts[i]));
+    el.tabIndex = i === selected ? 0 : -1;
+  }
+
+  function renderAll(){
+    for (var i = 0; i < 81; i++) renderCell(i);
+  }
+
+  function select(i, focus){
+    var prev = selected;
+    selected = i;
+    renderCell(prev);
+    renderCell(i);
+    if (focus) cells[i].focus();
+  }
+
+  function conflictWhere(i, d){
+    var peers = SudokuEngine.PEERS[i];
+    for (var k = 0; k < peers.length; k++) {
+      var p = peers[k];
+      if (values[p] !== d) continue;
+      if (SudokuEngine.ROW[p] === SudokuEngine.ROW[i]) return STR.whereRow;
+      if (SudokuEngine.COL[p] === SudokuEngine.COL[i]) return STR.whereCol;
+      return STR.whereBox;
+    }
+    return null;
+  }
+
+  function setDigit(d){
+    if (solved) return;
+    var i = selected;
+    if (given[i]) { announce(STR.givenCell); return; }
+    if (values[i] === d) return;
+    var r = SudokuEngine.ROW[i] + 1, c = SudokuEngine.COL[i] + 1;
+    if (d) startTimer();
+    values[i] = d;
+    computeConflicts();
+    renderAll();
+
+    if (!d) {
+      if (state.soundEnabled) GameAudio.erase();
+      announce(STR.cleared(r, c));
+      return;
+    }
+    var where = conflicts[i] ? conflictWhere(i, d) : null;
+    if (where) {
+      if (state.soundEnabled) GameAudio.conflict();
+      announce(STR.conflict(d, where));
+      if (!reduceMotion) {
+        var el = cells[i];
+        el.classList.remove('shake');
+        void el.offsetWidth;
+        el.classList.add('shake');
+        window.setTimeout(function(){ el.classList.remove('shake'); }, 620);
+      }
+    } else {
+      if (state.soundEnabled) GameAudio.place();
+      announce(STR.entered(d, r, c));
+    }
+    checkSolved();
+  }
+
+  function checkSolved(){
+    for (var i = 0; i < 81; i++) {
+      if (values[i] !== solution[i]) return;
+    }
+    finishGame();
+  }
+
+  function finishGame(){
+    solved = true;
+    stopTimer();
+    var t = Math.max(1, elapsedSeconds());
+    timeValueEl.textContent = formatTime(t);
+    var previousBest = state.best[LEVEL.id];
+    var isNewBest = previousBest === null || t < previousBest;
+    if (isNewBest) {
+      var nextBest = emptyBest();
+      Object.keys(state.best).forEach(function(k){ nextBest[k] = state.best[k]; });
+      nextBest[LEVEL.id] = t;
+      state = { v: SCHEMA_VERSION, soundEnabled: state.soundEnabled, best: nextBest };
+      Storage.save(state);
+    }
+    boardEl.classList.add('solved');
+    numButtons.forEach(function(b){ b.disabled = true; });
+    renderAll();
+    updateBestUI();
+    winSummaryEl.textContent = STR.winSummary(t, previousBest, isNewBest);
+    winPanel.hidden = false;
+    winPanel.focus();
+    if (state.soundEnabled) GameAudio.solved();
+    announce(STR.solvedAnnounce(t));
+  }
+
+  function newGame(announceIt){
+    var game = SudokuEngine.generate(LEVEL.minClues, LEVEL.maxClues);
+    solution = game.solution;
+    values = game.puzzle.slice();
+    given = values.map(function(v){ return v !== 0; });
+    conflicts = values.map(function(){ return false; });
+    solved = false;
+    stopTimer();
+    startTime = null;
+    timeValueEl.textContent = '0:00';
+    boardEl.classList.remove('solved');
+    numButtons.forEach(function(b){ b.disabled = false; });
+    winPanel.hidden = true;
+    selected = values.indexOf(0);
+    if (selected < 0) selected = 0;
+    renderAll();
+    updateBestUI();
+    if (announceIt) announce(STR.newPuzzle.replace('%n', game.clues));
+  }
+
+  function move(dr, dc){
+    var r = SudokuEngine.ROW[selected] + dr, c = SudokuEngine.COL[selected] + dc;
+    if (r < 0 || r > 8 || c < 0 || c > 8) return;
+    select(r * 9 + c, true);
+  }
+
+  boardEl.addEventListener('keydown', function(e){
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    var key = e.key;
+    var handled = true;
+    if (key === 'ArrowUp') move(-1, 0);
+    else if (key === 'ArrowDown') move(1, 0);
+    else if (key === 'ArrowLeft') move(0, -1);
+    else if (key === 'ArrowRight') move(0, 1);
+    else if (key === 'Home') select(SudokuEngine.ROW[selected] * 9, true);
+    else if (key === 'End') select(SudokuEngine.ROW[selected] * 9 + 8, true);
+    else if (/^[1-9]$/.test(key)) setDigit(parseInt(key, 10));
+    else if (key === 'Backspace' || key === 'Delete' || key === '0') setDigit(0);
+    else handled = false;
+    if (handled) e.preventDefault();
+  });
+
+  numButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      setDigit(parseInt(btn.getAttribute('data-digit'), 10));
+    });
+  });
+
+  soundToggleBtn.addEventListener('click', function(){
+    state = { v: SCHEMA_VERSION, soundEnabled: !state.soundEnabled, best: state.best };
+    Storage.save(state);
+    updateSoundUI();
+  });
+
+  newGameBtn.addEventListener('click', function(){ newGame(true); });
+  playAgainBtn.addEventListener('click', function(){
+    newGame(true);
+    cells[selected].focus();
+  });
+
+  buildBoard();
+  updateSoundUI();
+  newGame(false);
+})();
+</script>
+</body>
+</html>
