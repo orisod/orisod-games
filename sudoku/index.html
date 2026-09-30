@@ -55,7 +55,7 @@
           "name": "Is my progress or time uploaded anywhere?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Sudoku runs entirely in your browser. Your best time and sound setting are stored only in your browser's local storage, and nothing is sent to a server."
+            "text": "No. Sudoku runs entirely in your browser. Your best time for each difficulty and your sound setting are stored only in your browser's local storage, and nothing is sent to a server."
           }
         },
         {
@@ -170,6 +170,12 @@ h1{font-size:26px;margin-bottom:10px;}
 .badge-diff-med{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32);color:var(--amber-light);}
 .badge-diff-med .diff-dot{background:var(--amber);}
 .badge-mode{background:var(--s3);border-color:var(--border);color:var(--text-muted);}
+.badge-diff-low{background:rgba(37,99,235,.10);border-color:rgba(37,99,235,.32);color:var(--primary-light);}
+.badge-diff-low .diff-dot{background:var(--primary);}
+.badge-diff-high{background:rgba(251,113,133,.10);border-color:rgba(251,113,133,.35);color:#fecdd3;}
+.badge-diff-high .diff-dot{background:#fb7185;}
+.badge-diff-expert{background:rgba(124,92,255,.12);border-color:rgba(124,92,255,.4);color:var(--violet-light);}
+.badge-diff-expert .diff-dot{background:var(--violet);}
 
 /* game panel: same texture recipe as Memory Match, amber accent */
 .game-panel{
@@ -189,6 +195,29 @@ h1{font-size:26px;margin-bottom:10px;}
   background-size:34px 34px;
 }
 .game-panel > *{position:relative;z-index:1;}
+/* difficulty selector: same component as Memory Match, amber accent */
+.difficulty-field{border:0;padding:0;margin:0 0 18px 0;}
+.difficulty-legend{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);padding:0;margin-bottom:8px;}
+.difficulty-group{display:flex;flex-wrap:wrap;gap:8px;}
+.difficulty-option{position:relative;}
+.difficulty-input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none;}
+.difficulty-text{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  min-width:72px;min-height:44px;padding:6px 12px;border-radius:12px;cursor:pointer;
+  background:var(--s2);border:1px solid var(--border);color:var(--text-muted);
+  font-family:'Plus Jakarta Sans',sans-serif;transition:border-color .15s,background .15s,color .15s;
+}
+.difficulty-name{font-weight:700;font-size:13px;}
+.difficulty-pairs{font-size:10.5px;opacity:.85;}
+.difficulty-option:hover .difficulty-text{border-color:rgba(245,158,11,.5);}
+.difficulty-input:checked + .difficulty-text{
+  background:linear-gradient(160deg, var(--amber-400) 0%, var(--amber-600) 100%);
+  border-color:rgba(252,211,77,.65);color:#1c1204;
+  box-shadow:0 0 14px rgba(245,158,11,.4);
+}
+.difficulty-input:focus-visible + .difficulty-text{
+  outline:3px solid var(--amber-300);outline-offset:2px;
+}
 
 .hud{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
 .hud-stat{display:flex;flex-direction:column;gap:2px;min-width:56px;}
@@ -390,12 +419,34 @@ h1{font-size:26px;margin-bottom:10px;}
 
     <h1>Sudoku</h1>
     <div class="game-badges">
-      <span class="badge badge-diff-med"><span class="diff-dot" aria-hidden="true"></span>Medium</span>
+      <span class="badge badge-diff-med" id="diffBadge"><span class="diff-dot" aria-hidden="true"></span><span id="diffBadgeText">Medium</span></span>
       <span class="badge badge-mode">Solo</span>
     </div>
     <p class="intro">Fill every row, column, and 3x3 box with the numbers 1 to 9. Every puzzle has exactly one solution, and your best time is saved right here in your browser.</p>
 
     <div class="game-panel">
+      <fieldset class="difficulty-field">
+        <legend class="difficulty-legend">Difficulty</legend>
+        <div class="difficulty-group">
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="easy" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Easy</span><span class="difficulty-pairs">36-46 clues</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="medium" class="difficulty-input" checked>
+            <span class="difficulty-text"><span class="difficulty-name">Medium</span><span class="difficulty-pairs">32-35 clues</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="hard" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Hard</span><span class="difficulty-pairs">28-31 clues</span></span>
+          </label>
+          <label class="difficulty-option">
+            <input type="radio" name="difficulty" value="expert" class="difficulty-input">
+            <span class="difficulty-text"><span class="difficulty-name">Expert</span><span class="difficulty-pairs">22-27 clues</span></span>
+          </label>
+        </div>
+      </fieldset>
+
       <div class="hud" role="group" aria-label="Game status">
         <div class="hud-stat">
           <span class="hud-label">Time</span>
@@ -450,7 +501,7 @@ h1{font-size:26px;margin-bottom:10px;}
 
     <div class="seo-content">
       <h2>How to play Sudoku</h2>
-      <p>Sudoku is a logic puzzle on a 9x9 grid split into nine 3x3 boxes. Some cells start with a number. Your goal is to fill every empty cell so that each row, each column, and each 3x3 box contains the numbers 1 to 9 exactly once. Numbers in dark bold type are part of the puzzle and cannot be changed. The numbers you add appear in blue, and you can change or clear them at any time.</p>
+      <p>Sudoku is a logic puzzle on a 9x9 grid split into nine 3x3 boxes. Some cells start with a number. Your goal is to fill every empty cell so that each row, each column, and each 3x3 box contains the numbers 1 to 9 exactly once. Numbers in dark bold type are part of the puzzle and cannot be changed. The numbers you add appear in blue, and you can change or clear them at any time. Choose Easy, Medium, Hard, or Expert to change how many numbers are filled in when the puzzle starts: fewer starting numbers means a harder puzzle.</p>
 
       <h2>Frequently asked questions</h2>
       <div class="faq-item">
@@ -459,7 +510,7 @@ h1{font-size:26px;margin-bottom:10px;}
       </div>
       <div class="faq-item">
         <div class="q">Is my progress or time uploaded anywhere?</div>
-        <p>No. Sudoku runs entirely in your browser. Your best time and sound setting are stored only in your browser's local storage, and nothing is sent to a server.</p>
+        <p>No. Sudoku runs entirely in your browser. Your best time for each difficulty and your sound setting are stored only in your browser's local storage, and nothing is sent to a server.</p>
       </div>
       <div class="faq-item">
         <div class="q">Can I play Sudoku with a keyboard only?</div>
@@ -600,9 +651,15 @@ h1{font-size:26px;margin-bottom:10px;}
 
   var STORAGE_KEY = 'orisod-games:sudoku:v1';
   var SCHEMA_VERSION = 1;
-  // Base game ships one level (Medium). Clue range follows the common
-  // convention: Easy 36-46, Medium 32-35, Hard 28-31, Expert 22-27.
-  var LEVEL = { id:'medium', name:'Medium', minClues:32, maxClues:35 };
+  var DEFAULT_DIFFICULTY = 'medium';
+  // Clue ranges follow the common convention for 9x9 Sudoku (fewer clues =
+  // harder). Every generated puzzle is checked to have exactly one solution.
+  var LEVELS = {
+    easy:   { id:'easy',   name:'Easy',   minClues:36, maxClues:46, badge:'badge-diff-low' },
+    medium: { id:'medium', name:'Medium', minClues:32, maxClues:35, badge:'badge-diff-med' },
+    hard:   { id:'hard',   name:'Hard',   minClues:28, maxClues:31, badge:'badge-diff-high' },
+    expert: { id:'expert', name:'Expert', minClues:22, maxClues:27, badge:'badge-diff-expert' }
+  };
 
   function plural(n, one, many){ return n === 1 ? one : many; }
   function formatTime(total){
@@ -633,7 +690,8 @@ h1{font-size:26px;margin-bottom:10px;}
     givenCell: 'That number is part of the puzzle and cannot be changed.',
     conflict: function(d, where){ return 'Conflict: ' + d + ' is already in this ' + where + '.'; },
     whereRow: 'row', whereCol: 'column', whereBox: '3x3 box',
-    newPuzzle: 'New puzzle ready. Medium, ' + '%n clues.',
+    newPuzzle: function(name, n){ return 'New ' + name + ' puzzle ready, ' + n + ' clues.'; },
+    difficultyAnnounce: function(name){ return 'Difficulty set to ' + name + '.'; },
     solvedAnnounce: function(t){ return 'Puzzle solved in ' + spokenTime(t) + '.'; },
     winSummary: function(t, best, isNewBest){
       var s = 'You solved it in ' + spokenTime(t) + '.';
@@ -653,7 +711,9 @@ h1{font-size:26px;margin-bottom:10px;}
         best[k] = (typeof v === 'number' && v > 0 && isFinite(v)) ? Math.round(v) : null;
       });
     }
-    return { v: SCHEMA_VERSION, soundEnabled: !!(parsed && parsed.soundEnabled), best: best };
+    var difficulty = (parsed && typeof parsed.difficulty === 'string' && LEVELS.hasOwnProperty(parsed.difficulty))
+      ? parsed.difficulty : DEFAULT_DIFFICULTY;
+    return { v: SCHEMA_VERSION, soundEnabled: !!(parsed && parsed.soundEnabled), difficulty: difficulty, best: best };
   }
 
   // Future schema changes: bump SCHEMA_VERSION and add a step here that
@@ -723,6 +783,7 @@ h1{font-size:26px;margin-bottom:10px;}
   })();
 
   var state = Storage.load();
+  var LEVEL = LEVELS[state.difficulty] || LEVELS[DEFAULT_DIFFICULTY];
 
   var boardEl = document.getElementById('board');
   var timeValueEl = document.getElementById('timeValue');
@@ -737,6 +798,9 @@ h1{font-size:26px;margin-bottom:10px;}
   var playAgainBtn = document.getElementById('playAgainBtn');
   var liveRegion = document.getElementById('liveRegion');
   var numButtons = Array.prototype.slice.call(document.querySelectorAll('.num-btn'));
+  var difficultyInputs = Array.prototype.slice.call(document.querySelectorAll('.difficulty-input'));
+  var diffBadge = document.getElementById('diffBadge');
+  var diffBadgeText = document.getElementById('diffBadgeText');
 
   var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -911,7 +975,7 @@ h1{font-size:26px;margin-bottom:10px;}
       var nextBest = emptyBest();
       Object.keys(state.best).forEach(function(k){ nextBest[k] = state.best[k]; });
       nextBest[LEVEL.id] = t;
-      state = { v: SCHEMA_VERSION, soundEnabled: state.soundEnabled, best: nextBest };
+      state = { v: SCHEMA_VERSION, soundEnabled: state.soundEnabled, difficulty: state.difficulty, best: nextBest };
       Storage.save(state);
     }
     boardEl.classList.add('solved');
@@ -925,7 +989,16 @@ h1{font-size:26px;margin-bottom:10px;}
     announce(STR.solvedAnnounce(t));
   }
 
+  function syncDifficultyUI(){
+    difficultyInputs.forEach(function(input){ input.checked = (input.value === LEVEL.id); });
+    Object.keys(LEVELS).forEach(function(k){ diffBadge.classList.remove(LEVELS[k].badge); });
+    diffBadge.classList.add(LEVEL.badge);
+    diffBadgeText.textContent = LEVEL.name;
+  }
+
   function newGame(announceIt){
+    LEVEL = LEVELS[state.difficulty] || LEVELS[DEFAULT_DIFFICULTY];
+    syncDifficultyUI();
     var game = SudokuEngine.generate(LEVEL.minClues, LEVEL.maxClues);
     solution = game.solution;
     values = game.puzzle.slice();
@@ -942,7 +1015,7 @@ h1{font-size:26px;margin-bottom:10px;}
     if (selected < 0) selected = 0;
     renderAll();
     updateBestUI();
-    if (announceIt) announce(STR.newPuzzle.replace('%n', game.clues));
+    if (announceIt) announce(STR.newPuzzle(LEVEL.name, game.clues));
   }
 
   function move(dr, dc){
@@ -974,10 +1047,28 @@ h1{font-size:26px;margin-bottom:10px;}
   });
 
   soundToggleBtn.addEventListener('click', function(){
-    state = { v: SCHEMA_VERSION, soundEnabled: !state.soundEnabled, best: state.best };
+    state = { v: SCHEMA_VERSION, soundEnabled: !state.soundEnabled, difficulty: state.difficulty, best: state.best };
     Storage.save(state);
     updateSoundUI();
   });
+
+  difficultyInputs.forEach(function(input){
+    input.addEventListener('change', function(){
+      if (!input.checked) return;
+      var level = LEVELS[input.value];
+      if (!level) return;
+      state = { v: SCHEMA_VERSION, soundEnabled: state.soundEnabled, difficulty: level.id, best: state.best };
+      Storage.save(state);
+      newGame(false);
+      announce(STR.difficultyAnnounce(level.name) + ' ' + STR.newPuzzle(level.name, countClues()));
+    });
+  });
+
+  function countClues(){
+    var n = 0;
+    for (var i = 0; i < 81; i++) if (given[i]) n++;
+    return n;
+  }
 
   newGameBtn.addEventListener('click', function(){ newGame(true); });
   playAgainBtn.addEventListener('click', function(){

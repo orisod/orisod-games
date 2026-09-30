@@ -70,9 +70,9 @@ design evolves:
 - `/es/` (ES lobby) — Spanish counterpart.
 - `/memory-match/` + `/es/memory-match/`: Memory Match, live and linked
   from the lobby card.
-- `/sudoku/` + `/es/sudoku/`: Sudoku, in progress (base game built; difficulty
-  levels next). Not linked from the lobby yet: its card still shows "coming
-  soon" until the game is complete. Its puzzle engine sits between
+- `/sudoku/` + `/es/sudoku/`: Sudoku with Easy/Medium/Hard/Expert (36-46,
+  32-35, 28-31, 22-27 clues), live and linked from the lobby card. Its puzzle
+  engine sits between
   `/* sudoku-engine:start */` and `/* sudoku-engine:end */` markers so it can be
   extracted and tested outside the browser.
 - Other lobby cards (Snake, Custom Word Search) still show a "coming soon"
