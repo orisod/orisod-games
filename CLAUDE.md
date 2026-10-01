@@ -68,8 +68,20 @@ design evolves:
 
 - `/` (EN lobby) — the games catalog/lobby page.
 - `/es/` (ES lobby) — Spanish counterpart.
-- Game pages themselves don't exist yet; the lobby currently links nowhere
-  (cards show a "coming soon" state).
+- `/memory-match/` + `/es/memory-match/`: Memory Match, live and linked
+  from the lobby card.
+- `/sudoku/` + `/es/sudoku/`: Sudoku with Easy/Medium/Hard/Expert (36-46,
+  32-35, 28-31, 22-27 clues), live and linked from the lobby card. Its puzzle
+  engine sits between
+  `/* sudoku-engine:start */` and `/* sudoku-engine:end */` markers so it can be
+  extracted and tested outside the browser.
+- Other lobby cards (Snake, Custom Word Search) still show a "coming soon"
+  state. A live game's card becomes an `<a href>`; a not-yet-live one stays a
+  `<button>` that shows the "coming soon" toast.
+- Sudoku grid cells follow WCAG 2.2 AA target size (24px minimum) rather than
+  44px, because 81 cells cannot be 44px on a phone; every other control on the
+  page (number pad, Erase, New game, sound) is at least 44x44px. Decided with
+  the site owner on 2026-09-30.
 
 ## Ad policy
 
